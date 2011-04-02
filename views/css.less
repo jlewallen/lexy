@@ -1,0 +1,138 @@
+html {
+  overflow: -moz-scrollbars-vertical;
+  overflow: scroll;
+}
+
+fieldset {
+  padding: 1em 0em 0em 0em;
+  margin: 0 0 0 0;
+  border: none;
+}
+
+.navigation {
+  margin-bottom: 1em;
+
+  ul {
+    margin: 0em;
+  }
+
+  ul.top {
+    font-size: 14px;
+    color: #3b5d14;
+    background: #b2d281;
+    font-weight: bold;
+    padding: 6px;
+    overflow: auto;
+    height: 1%;
+    clear: both;
+  }
+
+  ul.top li {
+    color: #3b5d14;
+    text-decoration: none;
+    margin: 0 10px;
+    height: 23px;
+    line-height: 23px;
+    float: left;
+    display: block;
+  }
+
+  ul.top li a {
+    color: #000;
+  }
+
+  ul.top li a.active {
+    height: 23px;
+    line-height: 23px;
+    background: url(pic/tb_a.png) right top no-repeat;
+    padding-right: 10px;
+  }
+
+  ul.top li a.active span {
+    background: url(pic/tb_span.png) left top no-repeat;
+    height: 23px;
+    display: block;
+    padding-left: 10px;
+  }
+
+  ul.bottom {
+    font-size: 11px;
+    color: #3b5d14;
+    background: #90b557;
+    font-weight: bold;
+    padding: 6px;
+    overflow: auto;
+    height: 1%;
+    clear: both;
+  }
+
+  ul.bottom a {
+    color: #3b5d14;
+    text-decoration: none;
+    margin: 0 5px;
+    padding-right: 10px;
+    height: 23px;
+    line-height: 23px;
+    display: block;
+    float: left;
+    background: url(pic/mb_a.png) right top no-repeat;
+  }
+
+  ul.bottom a span {
+    background: url(pic/mb_span.png) left top no-repeat;
+    height: 23px;
+    display: block;
+    padding-left: 10px;
+  }
+}
+
+.lxc-container-small {
+  border: 1px solid #dfdfdf;
+  padding: 4px;
+
+  .name {
+    font-weight: bold;
+    font-size: 20px;
+  }
+
+  .status {
+    float: right;
+    background-color: #efefef;
+    padding: 10px;
+  }
+
+  .status.running {
+    background-color: #aaffaa;
+  }
+
+  .status.stopped {
+    background-color: #ffaaaa;
+  }
+
+  .path {
+  }
+}
+
+.lxc-container-detail {
+  .name {
+    font-weight: bold;
+    font-size: 20px;
+  }
+
+  .status {
+    float: right;
+    background-color: #efefef;
+    padding: 10px;
+  }
+
+  .status.running {
+    background-color: #aaffaa;
+  }
+
+  .status.stopped {
+    background-color: #ffaaaa;
+  }
+
+  .processes {
+  }
+}

@@ -6,16 +6,26 @@
     <link rel="stylesheet" href="/css/typography.css" type="text/css" media="screen" charset="utf-8" />
     <link rel="stylesheet" href="/css/grid.css" type="text/css" media="screen" charset="utf-8" />
     <link rel="stylesheet" href="/css/forms.css" type="text/css" media="screen" charset="utf-8" />
+    <link rel="stylesheet" href="http://ajax.googleapis.com/ajax/libs/jqueryui/1.7.0/themes/smoothness/jquery-ui.css" type="text/css" media="screen" charset="utf-8" />
+    <link rel="stylesheet" href="/css/application.css" type="text/css" media="screen" charset="utf-8" />
     <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.5/jquery.min.js"></script>
+    <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.11/jquery-ui.min.js"></script>
+    <script type="text/javascript" src="/js/rails.js"></script>
+    <script type="text/javascript" src="/js/application.js"></script>
   </head>
   <body>
     <div id="header" class="container">
       <h1>Lexy</h1>
 
-      <ul class="navigation">
-        <li><a href="/">Status</a></li>
-        <li><a href="/containers">Containers</a></li>
-      </ul>
+      <div class="navigation">
+        <ul class="top">
+          <li><a href="/">Status</a></li>
+          <li><a href="/containers">Containers</a></li>
+          <li><a href="/containers/new">Create Container</a></li>
+        </ul>
+        <ul class="bottom">
+        </ul>
+      </div>
     </div>
 
     <div id="view" class="container">

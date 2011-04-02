@@ -1,0 +1,33 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+require 'bundler/setup'
+require 'active_record'
+
+def setup
+  def database_configuration
+    db_path = File.dirname(__FILE__) + '/../config/database.yml'
+    db = YAML.load(ERB.new(IO.read(db_path)).result)
+    env = "development"
+    db[env].symbolize_keys
+  end
+  ActiveRecord::Base.establish_connection(database_configuration)
+
+  ActiveRecord::Schema.define do
+    create_table :containers do |t|
+      t.string :name
+      t.string :path
+      t.string :address
+      t.string :mask
+      t.string :bc
+      t.string :gw
+    end
+
+    create_table :templates do |t|
+      t.string :name
+      t.string :body
+    end
+  end
+end
+
+setup

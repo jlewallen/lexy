@@ -1,10 +1,11 @@
 <div>
 
   <% @containers.each do |container| %>
-  <div class="container">
-    <h2><%= container.name %></h2>
-    <h3><%= container.path %></h3>
-    <h3><%= container.status %></h3>
+  <div class="lxc-container-small span-11">
+    <div class="status <%= container.status.downcase %>"><%= container.status %></div>
+    <div class="name"><a href="/containers/<%= container.name %>"><%= container.name %></a></div>
+    <div class="path"><%= container.path %></div>
+    <div class="address"><%= container.address %></div>
   </div>
   <% end %>
 

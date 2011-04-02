@@ -1,0 +1,29 @@
+<div>
+  <form method="POST" action="/containers" AUTOCOMPLETE="off">
+    <fieldset> 
+    <p>
+      <label for="name">Name</label><br/>
+      <INPUT NAME="container[name]" value="" class="text"></INPUT>
+    </p>
+    <p>
+      <label for="address">Address</label><br/>
+      <INPUT NAME="container[address]" value="192.168.0.0" class="text"></INPUT>
+    </p>
+    <p>
+      <label for="mask">Netmask</label><br/>
+      <INPUT NAME="container[mask]" value="255.255.255.0" class="text"></INPUT>
+    </p>
+    <p>
+      <label for="bc">Broadcast</label><br/>
+      <INPUT NAME="container[bc]" value="255.255.255.255" class="text"></INPUT>
+    </p>
+    <p>
+      <label for="gw">Gateway</label><br/>
+      <INPUT NAME="container[gw]" value="192.168.0.1" class="text"></INPUT>
+    </p>
+    <p>
+      <INPUT TYPE="SUBMIT" value="Save"></INPUT>
+    </p>
+    </fieldset>
+  </form>
+</div>

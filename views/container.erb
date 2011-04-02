@@ -1,0 +1,48 @@
+<div class="lxc-container-detail">
+  <div class="span-8">
+    <div class="status <%= @container.status.downcase %>"><%= @container.status %></div>
+    <div class="name"><%= @container.name %></div>
+    <div class="path"><%= @container.path %></div>
+
+    <a href="/containers/<%= @container.name %>" data-method="delete">Delete</a>
+    <a href="/containers/<%= @container.name %>/start" class="ajax">Start</a>
+    <a href="/containers/<%= @container.name %>/stop" class="ajax">Stop</a>
+    <a href="/containers/<%= @container.name %>/configure" class="ajax">Configure</a>
+  </div>
+
+  <% if @container.running? %>
+
+    <div class="span-24 processes">
+      <pre><%= @container.processes %></pre>
+    </div>
+  
+  <% else %>
+
+    <div class="span-24">
+      <form method="POST" action="/containers/<%= @container.name %>" AUTOCOMPLETE="off">
+      <fieldset> 
+      <p>
+        <label for="address">Address</label><br/>
+        <INPUT NAME="container[address]" value="<%= @container.address %>" class="text"></INPUT>
+      </p>
+      <p>
+        <label for="mask">Netmask</label><br/>
+        <INPUT NAME="container[mask]" value="<%= @container.mask %>" class="text"></INPUT>
+      </p>
+      <p>
+        <label for="bc">Broadcast</label><br/>
+        <INPUT NAME="container[bc]" value="<%= @container.bc %>" class="text"></INPUT>
+      </p>
+      <p>
+        <label for="gw">Gateway</label><br/>
+        <INPUT NAME="container[gw]" value="<%= @container.gw %>" class="text"></INPUT>
+      </p>
+      <p>
+        <INPUT TYPE="HIDDEN" NAME="container[id]" value="<%= @container.id %>"></INPUT>
+        <INPUT TYPE="SUBMIT" value="Save"></INPUT>
+      </p>
+      </fieldset>
+      </form>
+    </div>
+  <% end %>
+</div>
