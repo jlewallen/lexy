@@ -93,7 +93,12 @@ end
 
 get '/containers/:name/log' do
   @container = Container.first(:name => params[:name])
-  erb :log
+  erb :log, :layout => !request.xhr?
+end
+
+get '/containers/:name/processes' do
+  @container = Container.first(:name => params[:name])
+  erb :processes, :layout => !request.xhr?
 end
 
 get '/containers/:name' do
