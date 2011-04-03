@@ -9,6 +9,7 @@
   </div>
 
   <div class="span-8 last" style="text-align: right;">
+    <a href="/containers/<%= @container.name %>/log">Log</a>
     <% if @container.running? %>
     <button data-href="/containers/<%= @container.name %>/stop" data-confirm="Are you sure?">Stop</button>
     <button data-href="/containers/<%= @container.name %>/restart" data-confirm="Are you sure?">Restart</button>
@@ -23,7 +24,7 @@
   <div class="span-24">&nbsp;</div>
 
   <div class="span-24">
-    <div class="span-8">
+    <div class="span-10">
       <form method="POST" action="/containers/<%= @container.name %>" AUTOCOMPLETE="off">
         <fieldset> 
         <legend>Networking</legend>
@@ -61,7 +62,7 @@
         </fieldset>
       </form>
     </div>
-    <div class="span-16 last">
+    <div class="span-14 last">
       <h4>Mounts</h4>
       <ul class="fstab-entries">
       <% @container.fstab_entries.each do |e| %>

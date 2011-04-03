@@ -47,6 +47,10 @@ class Container
     lxc.processes
   end
 
+  def log
+    lxc.log
+  end
+
   def interfaces
     [OpenStruct.new({ name: "eth0", address: address, mask: mask, gateway: gw, bc: bc })]
   end

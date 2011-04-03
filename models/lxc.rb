@@ -49,12 +49,12 @@ class LXC
     rootfs_path = path.join("rootfs")
     rfs = RootFS.new(rootfs_path)
     container.update_status("ROOTFS")
+    rfs.configure
     container.fstab_entries.each do |e|
       path = Pathname.new(rootfs_path.to_s + e.container_path)
       path.mkpath
       p path.to_s
     end
-    rfs.configure
     binding = @container.get_binding
     container.update_status("TEMPLATES")
     FileTemplate.new("config.tmpl").write(path.join("config"), binding)
@@ -104,6 +104,11 @@ class LXC
 
   def processes
     exec("/usr/bin/lxc-ps --name #{name} auxfww")
+  end
+
+  def log
+    file = path.join("rootfs/var/log/syslog")
+    exec("/usr/bin/tail -n 500 #{file}")
   end
 
  private

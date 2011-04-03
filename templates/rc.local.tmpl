@@ -11,9 +11,13 @@
 # 
 # By default this script does nothing.
 
+echo "Starting..." | logger -t lexy
+
 if [ -f /etc/rc.lexy.startup ]; then
   apt-get update
   (bash /etc/rc.lexy.startup 2>&1 | logger -t lexy) && mv /etc/rc.lexy.startup /etc/rc.lexy.startup.ran
 fi
+
+echo "Ready" | logger -t lexy
 
 exit 0

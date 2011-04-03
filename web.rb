@@ -91,6 +91,11 @@ get '/containers/new' do
   erb :container_form
 end
 
+get '/containers/:name/log' do
+  @container = Container.first(:name => params[:name])
+  erb :log
+end
+
 get '/containers/:name' do
   @startups = Startup.all
   @key_pairs = KeyPair.all
