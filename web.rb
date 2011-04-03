@@ -12,6 +12,17 @@ use Rack::MethodOverride
 
 enable :sessions
 
+helpers do
+  include Rack::Utils
+  alias_method :h, :escape_html
+end
+
+before do
+  unless request.path_info =~ /\.\w+$/
+    Stalker.enqueue('containers.refresh')
+  end
+end
+
 get '/css/application.css' do
   less :css
 end
@@ -22,7 +33,6 @@ end
 
 get '/containers' do
   @containers = Container.all
-  @containers.each { |c| c.refresh }
   erb :containers
 end
 
@@ -34,18 +44,33 @@ post '/containers/:name' do
 end
 
 post '/containers/:name/configure' do
-  Container.first(:name => params[:name]).configure
-  redirect '/containers/' + params[:name]
+  Stalker.enqueue('container.configure', :name => params[:name])
+  redirect '/containers/' + params[:name] unless request.xhr?
+end
+
+post '/containers/:name/clean' do
+  Stalker.enqueue('container.clean', :name => params[:name])
+  redirect '/containers/' + params[:name] unless request.xhr?
+end
+
+post '/containers/:name/restart' do
+  Stalker.enqueue('container.restart', :name => params[:name])
+  redirect '/containers/' + params[:name] unless request.xhr?
 end
 
 post '/containers/:name/start' do
-  Container.first(:name => params[:name]).start
-  redirect '/containers/' + params[:name]
+  Stalker.enqueue('container.start', :name => params[:name])
+  redirect '/containers/' + params[:name] unless request.xhr?
 end
 
 post '/containers/:name/stop' do
-  Container.first(:name => params[:name]).stop
-  redirect '/containers/' + params[:name]
+  Stalker.enqueue('container.stop', :name => params[:name])
+  redirect '/containers/' + params[:name] unless request.xhr?
+end
+
+delete '/containers/:name' do
+  Stalker.enqueue('container.destroy', :name => params[:name])
+  redirect '/containers'
 end
 
 get '/containers/new' do
@@ -55,7 +80,6 @@ end
 
 get '/containers/:name' do
   @container = Container.first(:name => params[:name])
-  @container.refresh
   erb :container
 end
 
@@ -63,12 +87,6 @@ post '/containers' do
   c = Container.new(params[:container])
   c.path = "/var/lib/lxc/" + c.name
   c.save
-  redirect '/containers'
-end
-
-delete '/containers/:name' do
-  c = Container.first(:name => params[:name])
-  c.destroy!
   redirect '/containers'
 end
 

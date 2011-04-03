@@ -125,6 +125,19 @@
 		}
 	});
 
+	$('button[data-confirm], button[data-method], button[data-remote]').live('click.rails', function(e) {
+		var link = $(this);
+		if (!allowAction(link)) return false;
+
+		if (link.data('remote') != undefined) {
+			handleRemote(link);
+			return false;
+		} else if (link.data('method')) {
+			handleMethod(link);
+			return false;
+		}
+	});
+
 	$('form').live('submit.rails', function(e) {
 		var form = $(this), remote = form.data('remote') != undefined;
 		if (!allowAction(form)) return false;

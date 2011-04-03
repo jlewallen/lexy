@@ -1,26 +1,40 @@
 <div class="lxc-container-detail">
-  <div class="span-8">
+  <div class="span-4">
     <div class="status <%= @container.status.downcase %>"><%= @container.status %></div>
+  </div>
+
+  <div class="span-12">
     <div class="name"><%= @container.name %></div>
     <div class="path"><%= @container.path %></div>
+  </div>
 
-    <a href="/containers/<%= @container.name %>" data-method="delete">Delete</a>
-    <a href="/containers/<%= @container.name %>/start" class="ajax">Start</a>
-    <a href="/containers/<%= @container.name %>/stop" class="ajax">Stop</a>
-    <a href="/containers/<%= @container.name %>/configure" class="ajax">Configure</a>
+  <div class="span-8 last" style="text-align: right;">
+    <% if @container.running? %>
+    <button data-href="/containers/<%= @container.name %>/stop" data-confirm="Are you sure?">Stop</button>
+    <button data-href="/containers/<%= @container.name %>/restart" data-confirm="Are you sure?">Restart</button>
+    <% else %>
+    <button data-href="/containers/<%= @container.name %>/start">Start</button>
+    <button data-href="/containers/<%= @container.name %>/clean" data-method="POST" data-confirm="Are you sure?">Reset</button>
+    <button data-href="/containers/<%= @container.name %>" data-method="delete" data-confirm="Are you sure?" data-sync="yes">Delete</button>
+    <% end %>
+    <button data-href="/containers/<%= @container.name %>/configure" data-method="POST">Configure</button>
   </div>
 
   <% if @container.running? %>
 
     <div class="span-24 processes">
-      <pre><%= @container.processes %></pre>
+      <pre><%= h @container.processes %></pre>
     </div>
   
-  <% else %>
+  <% end %>
 
-    <div class="span-24">
-      <form method="POST" action="/containers/<%= @container.name %>" AUTOCOMPLETE="off">
+  <div class="span-24">
+    <form method="POST" action="/containers/<%= @container.name %>" AUTOCOMPLETE="off">
       <fieldset> 
+      <p style="float: right;">
+        <label for="rc_startup">Startup</label><br/>
+        <TEXTAREA NAME="container[rc_startup]" cols="80" style="width: 590px;"><%= @container.rc_startup %></TEXTAREA>
+      </p>
       <p>
         <label for="address">Address</label><br/>
         <INPUT NAME="container[address]" value="<%= @container.address %>" class="text"></INPUT>
@@ -42,7 +56,6 @@
         <INPUT TYPE="SUBMIT" value="Save"></INPUT>
       </p>
       </fieldset>
-      </form>
-    </div>
-  <% end %>
+    </form>
+  </div>
 </div>

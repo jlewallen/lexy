@@ -4,6 +4,7 @@ class FileTemplate
   end
 
   def write(path, data)
+    p "Writing #{path}..."
     File.open(path, "w") do |f|
       body = @erb.result(data)
       f.write(body)
@@ -43,14 +44,28 @@ class LXC
   end
 
   def configure
+    container.update_status("CONFIGURING")
     path.mkpath
-    rfs = RootFS.new(path.join("rootfs"))
+    rootfs_path = path.join("rootfs")
+    rfs = RootFS.new(rootfs_path)
+    container.update_status("ROOTFS")
     rfs.configure
     binding = @container.get_binding
+    container.update_status("TEMPLATES")
     FileTemplate.new("config.tmpl").write(path.join("config"), binding)
     FileTemplate.new("fstab.tmpl").write(path.join("fstab"), binding)
-    FileTemplate.new("interfaces.tmpl").write(rfs.path.join("etc/network/interfaces"), binding)
     FileTemplate.new("hosts.tmpl").write(rfs.path.join("etc/hosts"), binding)
+    FileTemplate.new("interfaces.tmpl").write(rfs.path.join("etc/network/interfaces"), binding)
+    FileTemplate.new("rc.local.tmpl").write(rfs.path.join("etc/rc.local"), binding)
+    FileTemplate.new("rc.lexy.startup.tmpl").write(rfs.path.join("etc/rc.lexy.startup"), binding)
+    container.refresh
+  end
+
+  def clean
+    container.update_status("CLEAN")
+    rootfs_path = path.join("rootfs")
+    rootfs_path.rmtree if rootfs_path.directory?
+    configure
   end
 
   def status
@@ -62,7 +77,6 @@ class LXC
   end
 
   def running?
-    'RUNNING' == status
   end
 
   def start

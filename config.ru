@@ -12,7 +12,9 @@ require 'dm-types'
 require "active_support"
 require "erubis"
 require "tilt"
+require "less"
 require "pathname"
+require "stalker"
 
 configure(:development) do |c|
   require "sinatra/reloader"
