@@ -5,7 +5,7 @@
 <% @collection.each do |pair| %>
 <div>
   <h3><a href="/keys/<%= pair.id %>"><%= pair.name %></a></h3>
-  <pre><%= pair.public %></pre>
+  <INPUT value="<%= pair.public %>" style="width: 100%;"></INPUT>
   <pre><%= pair.private %></pre>
   <button data-href="/keys/<%= pair.id %>" data-method="DELETE" data-sync="yes">Delete</button>
 </div>
