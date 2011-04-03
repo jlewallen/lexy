@@ -59,6 +59,15 @@ class LXC
     FileTemplate.new("rc.local.tmpl").write(rfs.path.join("etc/rc.local"), binding)
     FileTemplate.new("rc.lexy.startup.tmpl").write(rfs.path.join("etc/rc.lexy.startup"), binding)
     FileTemplate.new("authorized_keys.tmpl").write(rfs.path.join("root/.ssh/authorized_keys"), binding)
+    hostname = rfs.path.join("etc/hostname")
+    File.open(hostname, "w") do |f|
+      f.write(@container.hostname)
+    end
+    container.update_status("SSH-KEYGEN")
+    key = rfs.path.join("etc/ssh/ssh_host_dsa_key")
+    exec("ssh-keygen -t dsa -N '' -f #{key}") unless key.file?
+    key = rfs.path.join("etc/ssh/ssh_host_rsa_key")
+    exec("ssh-keygen -t rsa -N '' -f #{key}") unless key.file?
     container.refresh
   end
 

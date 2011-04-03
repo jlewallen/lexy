@@ -12,6 +12,10 @@ class Container
   property :rc_startup, Text
   property :public_key, Text
 
+  def hostname
+    name
+  end
+
   def refresh
     self.status = lxc.status
     save
