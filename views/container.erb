@@ -4,14 +4,15 @@
       <div class="status <%= @container.status.downcase %>"><span><%= @container.status %><span></div>
     </div>
 
-    <div class="span-12">
+    <div class="span-10">
       <div class="name"><%= @container.name %></div>
       <div class="path"><%= @container.path %></div>
     </div>
 
-    <div class="span-8 last" style="text-align: right;">
+    <div class="span-10 last" style="text-align: right;">
       <button data-href="/containers/<%= @container.name %>/log" data-method="GET">Log</button>
       <% if @container.running? %>
+      <button data-href="/containers/<%= @container.name %>/run-startup">Run Startup</button>
       <button data-href="/containers/<%= @container.name %>/stop" data-confirm="Are you sure?">Stop</button>
       <button data-href="/containers/<%= @container.name %>/restart" data-confirm="Are you sure?">Restart</button>
       <% else %>
