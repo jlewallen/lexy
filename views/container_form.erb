@@ -1,9 +1,18 @@
 <div>
   <form method="POST" action="/containers" AUTOCOMPLETE="off">
     <fieldset> 
+    <legend>Setup</legend>
     <p>
       <label for="name">Name</label><br/>
       <INPUT NAME="container[name]" value="" class="text"></INPUT>
+    </p>
+    <p>
+      <label for="key_pair">Key Pair</label><br/>
+      <%= selection("container[key_pair_id]", @key_pairs, @resource.key_pair) %>
+    </p>
+    <p>
+      <label for="startup">Startup</label><br/>
+      <%= selection("container[startup_id]", @startups, @resource.startup) %>
     </p>
     </fieldset> 
     <fieldset> 

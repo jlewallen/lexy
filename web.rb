@@ -85,7 +85,9 @@ delete '/containers/:name' do
 end
 
 get '/containers/new' do
-  @container = Container.new
+  @startups = Startup.all
+  @key_pairs = KeyPair.all
+  @resource = Container.new
   erb :container_form
 end
 
