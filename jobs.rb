@@ -64,9 +64,8 @@ job 'container.ssh' do |args|
   Tempfile.open(container.name, container.path) do |f|
     f.write(container.private_key)
     f.close
-    data = `ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeychecking=no -o CheckHostIP=no -o LogLevel=ERROR -i #{f.path} #{container.ssh_to} '#{command}'`
+    data = `ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeychecking=no -o CheckHostIP=no -o LogLevel=ERROR -i #{f.path} #{container.ssh_to} '#{command} &'`
     f.unlink
-    p data
   end
 end
 

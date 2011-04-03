@@ -183,7 +183,7 @@ post '/startups/:id' do
   @resource = Startup.get(params[:id])
   @resource.attributes = params[:startup]
   @resource.save
-  redirect '/startups'
+  redirect '/startups/' + params[:id]
 end
 
 delete '/startups/:id' do
