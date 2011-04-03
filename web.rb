@@ -15,6 +15,17 @@ enable :sessions
 helpers do
   include Rack::Utils
   alias_method :h, :escape_html
+
+  def selection(name, options, selected)
+    "<SELECT NAME='#{name}'>" + "<OPTION VALUE=''>Choose one...</OPTION>" +
+    options.map do |p|
+      if p == selected then
+        "<OPTION VALUE='#{p.id}' SELECTED>#{p.name}</OPTION>"
+      else
+        "<OPTION VALUE='#{p.id}'>#{p.name}</OPTION>"
+      end
+    end.join("") + "</SELECT>"
+  end
 end
 
 before do
@@ -79,6 +90,8 @@ get '/containers/new' do
 end
 
 get '/containers/:name' do
+  @startups = Startup.all
+  @key_pairs = KeyPair.all
   @container = Container.first(:name => params[:name])
   erb :container
 end
@@ -103,6 +116,7 @@ end
 post '/keys' do
   @resource = KeyPair.new(params[:key])
   @resource.save
+  p @resource.errors
   redirect '/keys'
 end
 

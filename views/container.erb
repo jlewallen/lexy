@@ -23,8 +23,8 @@
   <div class="span-24">&nbsp;</div>
 
   <div class="span-24">
-    <form method="POST" action="/containers/<%= @container.name %>" AUTOCOMPLETE="off">
-      <div class="span-8">
+    <div class="span-8">
+      <form method="POST" action="/containers/<%= @container.name %>" AUTOCOMPLETE="off">
         <fieldset> 
         <legend>Networking</legend>
         <p>
@@ -44,44 +44,40 @@
           <INPUT NAME="container[gw]" value="<%= @container.gw %>" class="text"></INPUT>
         </p>
         </fieldset>
-      </div>
-      <div class="span-16 last">
         <fieldset>
-          <legend>Startup</legend>
-          <p>
-            <TEXTAREA NAME="container[rc_startup]" style="width: 100%; height: 240px;"><%= @container.rc_startup %></TEXTAREA>
-          </p>
-        </fieldset>
-      </div>
-      <div class="span-24 last">
+        <legend>Setup</legend>
         <p>
-          <label for="public_key">Public Key</label><br/>
-          <TEXTAREA NAME="container[public_key]" rows="4" style="width: 100%; height: 40px;"><%= @container.public_key %></TEXTAREA>
+          <label for="key_pair">Key Pair</label><br/>
+          <%= selection("container[key_pair_id]", @key_pairs, @container.key_pair) %>
         </p>
-      </div>
-      <p>
-        <INPUT TYPE="HIDDEN" NAME="container[id]" value="<%= @container.id %>"></INPUT>
-        <INPUT TYPE="SUBMIT" value="Save"></INPUT>
-      </p>
-    </form>
-  </div>
-
-  <div class="span-24 last">
-    <h3>Mounts</h3>
-    <ul class="fstab-entries">
-    <% @container.fstab_entries.each do |e| %>
-      <li>
-        Host directory <tt><%= e.path %></tt> on <tt><%= e.container_path %></tt>
-        <button data-href="/fstab/<%= e.id %>" data-method="delete" data-confirm="Are you sure?" data-sync="yes">Delete</button>
-      </li>
-    <% end %>
-    <li>
-      <form method="POST" action="/fstab/new" autocomplete="no">
-        Host directory <INPUT NAME="fstab[path]"></INPUT> on <INPUT NAME="fstab[container_path]"></INPUT>.
-        <INPUT TYPE="SUBMIT" VALUE="Add"></INPUT> <INPUT NAME="fstab[container_id]" TYPE="HIDDEN" VALUE="<%= @container.id %>"></INPUT>
+        <p>
+          <label for="startup">Startup</label><br/>
+          <%= selection("container[startup_id]", @startups, @container.startup) %>
+        </p>
+        <p>
+          <INPUT TYPE="HIDDEN" NAME="container[id]" value="<%= @container.id %>"></INPUT>
+          <INPUT TYPE="SUBMIT" value="Save"></INPUT>
+        </p>
+        </fieldset>
       </form>
-    </li>
-    </ul>
+    </div>
+    <div class="span-16 last">
+      <h4>Mounts</h4>
+      <ul class="fstab-entries">
+      <% @container.fstab_entries.each do |e| %>
+        <li>
+          Host directory <tt><%= e.path %></tt> on <tt><%= e.container_path %></tt>
+          <button data-href="/fstab/<%= e.id %>" data-method="delete" data-confirm="Are you sure?" data-sync="yes">Delete</button>
+        </li>
+      <% end %>
+      <li>
+        <form method="POST" action="/fstab/new" autocomplete="off">
+          Host directory <INPUT NAME="fstab[path]"></INPUT> on <INPUT NAME="fstab[container_path]"></INPUT>.
+          <INPUT TYPE="SUBMIT" VALUE="Add"></INPUT> <INPUT NAME="fstab[container_id]" TYPE="HIDDEN" VALUE="<%= @container.id %>"></INPUT>
+        </form>
+      </li>
+      </ul>
+    </div>
   </div>
 
   <% if @container.running? %>
