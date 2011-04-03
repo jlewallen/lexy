@@ -14,6 +14,10 @@ class Container
   belongs_to :startup, :required => false
   has n, :fstab_entries
 
+  def key_pairs
+    [ key_pair ].compact
+  end
+
   def hostname
     name
   end
