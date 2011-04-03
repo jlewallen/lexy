@@ -40,12 +40,15 @@ job 'container.restart' do |args|
   args.symbolize_keys!
   container = Container.first(:name => args[:name])
   container.stop
+  container.configure
   container.start
 end
 
 job 'container.start' do |args|
   args.symbolize_keys!
-  Container.first(:name => args[:name]).start
+  container = Container.first(:name => args[:name])
+  container.configure
+  container.start
 end
 
 job 'container.stop' do |args|
