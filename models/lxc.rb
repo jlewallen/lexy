@@ -60,6 +60,7 @@ class LXC
     FileTemplate.new("config.tmpl").write(path.join("config"), binding)
     FileTemplate.new("fstab.tmpl").write(path.join("fstab"), binding)
     FileTemplate.new("hosts.tmpl").write(rfs.path.join("etc/hosts"), binding)
+    FileTemplate.new("sshd_config.tmpl").write(rfs.path.join("etc/ssh/sshd_config"), binding)
     FileTemplate.new("interfaces.tmpl").write(rfs.path.join("etc/network/interfaces"), binding)
     FileTemplate.new("rc.local.tmpl").write(rfs.path.join("etc/rc.local"), binding)
     FileTemplate.new("rc.lexy.startup.tmpl").write(rfs.path.join("etc/rc.lexy.startup"), binding)

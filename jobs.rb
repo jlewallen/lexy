@@ -11,6 +11,7 @@ require 'dm-types'
 require "active_support"
 require "erubis"
 require "pathname"
+require 'tempfile'
 require "stalker"
 
 DataMapper::Logger.new(STDOUT, :debug)
@@ -54,6 +55,19 @@ end
 job 'container.stop' do |args|
   args.symbolize_keys!
   Container.first(:name => args[:name]).stop
+end
+
+job 'container.ssh' do |args|
+  args.symbolize_keys!
+  command = args[:command]
+  container = Container.first(:name => args[:name])
+  Tempfile.open(container.name, container.path) do |f|
+    f.write(container.private_key)
+    f.close
+    data = `ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeychecking=no -o CheckHostIP=no -o LogLevel=ERROR -i #{f.path} #{container.ssh_to} '#{command}'`
+    f.unlink
+    p data
+  end
 end
 
 job 'containers.refresh' do |args|

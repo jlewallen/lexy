@@ -68,6 +68,14 @@ class Container
     self.save
   end
 
+  def private_key
+    key_pairs.first.private
+  end
+
+  def ssh_to
+    "root@" + address
+  end
+
  private
   def lxc
     @lxc ||= LXC.new(self)
