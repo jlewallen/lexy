@@ -61,10 +61,13 @@ job 'container.ssh' do |args|
   args.symbolize_keys!
   command = args[:command]
   container = Container.first(:name => args[:name])
+  container.configure
   Tempfile.open(container.name, container.path) do |f|
     f.write(container.private_key)
     f.close
-    data = `ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeychecking=no -o CheckHostIP=no -o LogLevel=ERROR -i #{f.path} #{container.ssh_to} '#{command} &'`
+    command = "ssh -o UserKnownHostsFile=/dev/null -o StrictHostKeychecking=no -o CheckHostIP=no -o LogLevel=ERROR -i #{f.path} #{container.ssh_to} '#{command} &'"
+    p command
+    data = `#{command}`
     f.unlink
   end
 end

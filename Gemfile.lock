@@ -57,6 +57,8 @@ GEM
     mutter (0.5.3)
     polyglot (0.3.1)
     rack (1.2.2)
+    rack-flash (0.1.1)
+      rack
     sinatra (1.2.1)
       rack (~> 1.1)
       tilt (>= 1.2.2, < 2.0)
@@ -100,6 +102,7 @@ DEPENDENCIES
   dm-validations
   erubis
   less
+  rack-flash
   sinatra
   sinatra-reloader
   sqlite3

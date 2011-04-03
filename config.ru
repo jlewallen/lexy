@@ -15,6 +15,7 @@ require "tilt"
 require "less"
 require "pathname"
 require "stalker"
+require 'rack-flash'
 
 configure(:development) do |c|
   require "sinatra/reloader"

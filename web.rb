@@ -9,6 +9,7 @@ DataMapper.finalize
 DataMapper.auto_upgrade!
 
 use Rack::MethodOverride
+use Rack::Flash
 
 enable :sessions
 
@@ -55,6 +56,7 @@ post '/containers/:name' do
   c = Container.get(params[:container][:id])
   c.attributes = params[:container]
   c.save
+  flash[:notice] = "Container saved."
   redirect '/containers/' + params[:name]
 end
 
@@ -121,6 +123,7 @@ post '/containers' do
   c = Container.new(params[:container])
   c.path = "/var/lib/lxc/" + c.name
   c.save
+  flash[:notice] = "Container saved."
   redirect '/containers'
 end
 
@@ -137,7 +140,7 @@ end
 post '/keys' do
   @resource = KeyPair.new(params[:key])
   @resource.save
-  p @resource.errors
+  flash[:notice] = "Key pair created."
   redirect '/keys'
 end
 
@@ -145,6 +148,7 @@ post '/keys/:id' do
   @resource = KeyPair.get(params[:id])
   @resource.attributes = params[:key]
   @resource.save
+  flash[:notice] = "Key pair saved."
   redirect '/keys'
 end
 
@@ -155,6 +159,7 @@ end
 
 delete '/keys/:id' do
   KeyPair.get(params[:id]).destroy
+  flash[:notice] = "Key pair deleted."
   redirect '/keys'
 end
 
@@ -171,6 +176,7 @@ end
 post '/startups' do
   @resource = Startup.new(params[:startup])
   @resource.save
+  flash[:notice] = "Startup created."
   redirect '/startups'
 end
 
@@ -183,11 +189,13 @@ post '/startups/:id' do
   @resource = Startup.get(params[:id])
   @resource.attributes = params[:startup]
   @resource.save
+  flash[:notice] = "Startup saved."
   redirect '/startups/' + params[:id]
 end
 
 delete '/startups/:id' do
   Startup.get(params[:id]).destroy
+  flash[:notice] = "Startup deleted."
   redirect '/startups'
 end
 
@@ -195,12 +203,14 @@ post '/fstab/new' do
   attrs = params[:fstab]
   @resource = FstabEntry.new(attrs)
   @resource.save
+  flash[:notice] = "Mount added."
   redirect '/containers/' + @resource.container.name unless request.xhr?
 end
 
 delete '/fstab/:id' do
   @resource = FstabEntry.get(params[:id])
   @resource.destroy
+  flash[:notice] = "Mount deleted."
   redirect '/containers/' + @resource.container.name unless request.xhr?
 end
 
