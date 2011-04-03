@@ -1,29 +1,37 @@
 <div class="lxc-container-detail">
-  <div class="span-4">
-    <div class="status <%= @container.status.downcase %>"><span><%= @container.status %><span></div>
+  <div class="span-24 last" style="margin-bottom: 1em;">
+    <div class="span-4">
+      <div class="status <%= @container.status.downcase %>"><span><%= @container.status %><span></div>
+    </div>
+
+    <div class="span-12">
+      <div class="name"><%= @container.name %></div>
+      <div class="path"><%= @container.path %></div>
+    </div>
+
+    <div class="span-8 last" style="text-align: right;">
+      <button data-href="/containers/<%= @container.name %>/log" data-method="GET">Log</button>
+      <% if @container.running? %>
+      <button data-href="/containers/<%= @container.name %>/stop" data-confirm="Are you sure?">Stop</button>
+      <button data-href="/containers/<%= @container.name %>/restart" data-confirm="Are you sure?">Restart</button>
+      <% else %>
+      <button data-href="/containers/<%= @container.name %>/start">Start</button>
+      <button data-href="/containers/<%= @container.name %>/clean" data-method="POST" data-confirm="Are you sure?">Reset</button>
+      <button data-href="/containers/<%= @container.name %>" data-method="delete" data-confirm="Are you sure?" data-sync="yes">Delete</button>
+      <% end %>
+      <button data-href="/containers/<%= @container.name %>/configure" data-method="POST">Configure</button>
+    </div>
   </div>
 
-  <div class="span-12">
-    <div class="name"><%= @container.name %></div>
-    <div class="path"><%= @container.path %></div>
-  </div>
+  <div id="tabs" class="clear">
+    <ul>
+      <li><a href="#tabs-1">Configuration</a></li>
+      <li><a href="#tabs-2">Processes</a></li>
+      <li><a href="#tabs-3">Log</a></li>
+    </ul>
+    <div id="tabs-1" class="container">
 
-  <div class="span-8 last" style="text-align: right;">
-    <button data-href="/containers/<%= @container.name %>/log" data-method="GET">Log</button>
-    <% if @container.running? %>
-    <button data-href="/containers/<%= @container.name %>/stop" data-confirm="Are you sure?">Stop</button>
-    <button data-href="/containers/<%= @container.name %>/restart" data-confirm="Are you sure?">Restart</button>
-    <% else %>
-    <button data-href="/containers/<%= @container.name %>/start">Start</button>
-    <button data-href="/containers/<%= @container.name %>/clean" data-method="POST" data-confirm="Are you sure?">Reset</button>
-    <button data-href="/containers/<%= @container.name %>" data-method="delete" data-confirm="Are you sure?" data-sync="yes">Delete</button>
-    <% end %>
-    <button data-href="/containers/<%= @container.name %>/configure" data-method="POST">Configure</button>
-  </div>
-
-  <div class="span-24 last">&nbsp;</div>
-
-  <div class="span-24 last">
+    <div class="span-24 last">
     <div class="span-10">
       <form method="POST" action="/containers/<%= @container.name %>" AUTOCOMPLETE="off">
         <fieldset> 
@@ -80,18 +88,13 @@
       </li>
       </ul>
     </div>
-  </div>
-</div>
+    </div>
 
-  <div id="tabs" class="clear">
-    <ul>
-      <li><a href="#tabs-1">Processes</a></li>
-      <li><a href="#tabs-2">Log</a></li>
-    </ul>
-    <div id="tabs-1">
-      <div class="processes" style="width: 100%; overflow: scroll; font-size: 11px;"></div>
     </div>
     <div id="tabs-2">
+      <div class="processes" style="width: 100%; overflow: scroll; font-size: 11px;"></div>
+    </div>
+    <div id="tabs-3">
       <div class="log" style="width: 100%; max-height: 600px; overflow: scroll; font-size: 11px;"></div>
     </div>
   </div>
@@ -99,9 +102,18 @@
   <script type="text/javascript">
     $(function() {
       $('#tabs').tabs({});
-      $('.log').load("/containers/<%= @container.name %>/log");
-      <% if @container.running? %>
-      $('.processes').load("/containers/<%= @container.name %>/processes");
-      <% end %>
+
+      var running = <%= @container.running? ? 'true' : 'false' %>;
+      function refresh() {
+        $('.log').load("/containers/<%= @container.name %>/log");
+        $('.processes').load("/containers/<%= @container.name %>/processes");
+      }
+      if (running) {
+        refresh();
+        $('body').everyTime(60000, function(i) {
+          refresh();
+        });
+      }
     });
   </script>
+</div>
