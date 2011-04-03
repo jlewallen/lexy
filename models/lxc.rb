@@ -58,6 +58,7 @@ class LXC
     FileTemplate.new("interfaces.tmpl").write(rfs.path.join("etc/network/interfaces"), binding)
     FileTemplate.new("rc.local.tmpl").write(rfs.path.join("etc/rc.local"), binding)
     FileTemplate.new("rc.lexy.startup.tmpl").write(rfs.path.join("etc/rc.lexy.startup"), binding)
+    FileTemplate.new("authorized_keys.tmpl").write(rfs.path.join("root/.ssh/authorized_keys"), binding)
     container.refresh
   end
 

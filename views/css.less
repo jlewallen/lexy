@@ -3,10 +3,13 @@ html {
   overflow: scroll;
 }
 
-fieldset {
+FIELDSET {
   padding: 1em 0em 0em 0em;
   margin: 0 0 0 0;
   border: none;
+}
+
+pre {
 }
 
 .navigation {
@@ -99,6 +102,10 @@ fieldset {
     float: right;
     background-color: #efefef;
     padding: 10px;
+    height: 100%;
+    text-vertical-align: middle;
+    text-align: center;
+    font-weight: bold;
   }
 
   .status.running {
@@ -121,9 +128,11 @@ fieldset {
 
   .status {
     background-color: #efefef;
-    text-vertical-align: middle;
     padding: 10px;
     min-height: 21px;
+    text-vertical-align: middle;
+    text-align: center;
+    font-weight: bold;
   }
 
   .status.running {

@@ -1,0 +1,11 @@
+<div>
+  <a href="/startups/new">Add</a>
+</div>
+
+<% @collection.each do |startup| %>
+<div>
+  <h3><a href="/startups/<%= startup.id %>"><%= startup.name %></a></h3>
+  <p><%= startup.description %></p>
+  <button data-href="/startups/<%= startup.id %>" data-method="DELETE" data-sync="yes">Delete</button>
+</div>
+<% end %>

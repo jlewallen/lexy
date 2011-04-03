@@ -75,7 +75,7 @@ end
 
 get '/containers/new' do
   @container = Container.new
-  erb :container_new
+  erb :container_form
 end
 
 get '/containers/:name' do
@@ -88,6 +88,72 @@ post '/containers' do
   c.path = "/var/lib/lxc/" + c.name
   c.save
   redirect '/containers'
+end
+
+get '/keys' do
+  @collection = KeyPair.all
+  erb :keys
+end
+
+get '/keys/new' do
+  @resource = KeyPair.new
+  erb :key_form
+end
+
+post '/keys' do
+  @resource = KeyPair.new(params[:key])
+  @resource.save
+  redirect '/keys'
+end
+
+post '/keys/:id' do
+  @resource = KeyPair.get(params[:id])
+  @resource.attributes = params[:key]
+  @resource.save
+  redirect '/keys'
+end
+
+get '/keys/:id' do
+  @resource = KeyPair.get(params[:id])
+  erb :key_form
+end
+
+delete '/keys/:id' do
+  KeyPair.get(params[:id]).destroy
+  redirect '/keys'
+end
+
+get '/startups' do
+  @collection = Startup.all
+  erb :startups
+end
+
+get '/startups/new' do
+  @resource = Startup.new
+  erb :startup_form
+end
+
+post '/startups' do
+  @resource = Startup.new(params[:startup])
+  @resource.save
+  redirect '/startups'
+end
+
+get '/startups/:id' do
+  @resource = Startup.get(params[:id])
+  erb :startup_form
+end
+
+post '/startups/:id' do
+  @resource = Startup.get(params[:id])
+  @resource.attributes = params[:startup]
+  @resource.save
+  redirect '/startups'
+end
+
+delete '/startups/:id' do
+  Startup.get(params[:id]).destroy
+  redirect '/startups'
 end
 
 # EOF

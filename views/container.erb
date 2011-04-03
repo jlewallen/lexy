@@ -31,26 +31,36 @@
   <div class="span-24">
     <form method="POST" action="/containers/<%= @container.name %>" AUTOCOMPLETE="off">
       <fieldset> 
-      <p style="float: right;">
-        <label for="rc_startup">Startup</label><br/>
-        <TEXTAREA NAME="container[rc_startup]" cols="80" style="width: 590px;"><%= @container.rc_startup %></TEXTAREA>
-      </p>
-      <p>
-        <label for="address">Address</label><br/>
-        <INPUT NAME="container[address]" value="<%= @container.address %>" class="text"></INPUT>
-      </p>
-      <p>
-        <label for="mask">Netmask</label><br/>
-        <INPUT NAME="container[mask]" value="<%= @container.mask %>" class="text"></INPUT>
-      </p>
-      <p>
-        <label for="bc">Broadcast</label><br/>
-        <INPUT NAME="container[bc]" value="<%= @container.bc %>" class="text"></INPUT>
-      </p>
-      <p>
-        <label for="gw">Gateway</label><br/>
-        <INPUT NAME="container[gw]" value="<%= @container.gw %>" class="text"></INPUT>
-      </p>
+      <div class="span-8">
+        <p>
+          <label for="address">Address</label><br/>
+          <INPUT NAME="container[address]" value="<%= @container.address %>" class="text"></INPUT>
+        </p>
+        <p>
+          <label for="mask">Netmask</label><br/>
+          <INPUT NAME="container[mask]" value="<%= @container.mask %>" class="text"></INPUT>
+        </p>
+        <p>
+          <label for="bc">Broadcast</label><br/>
+          <INPUT NAME="container[bc]" value="<%= @container.bc %>" class="text"></INPUT>
+        </p>
+        <p>
+          <label for="gw">Gateway</label><br/>
+          <INPUT NAME="container[gw]" value="<%= @container.gw %>" class="text"></INPUT>
+        </p>
+      </div>
+      <div class="span-16 last">
+        <p>
+          <label for="rc_startup">Startup</label><br/>
+          <TEXTAREA NAME="container[rc_startup]" style="width: 100%;"><%= @container.rc_startup %></TEXTAREA>
+        </p>
+      </div>
+      <div class="span-24 last">
+        <p>
+          <label for="public_key">Public Key</label><br/>
+          <TEXTAREA NAME="container[public_key]" rows="4" style="width: 100%; height: 40px;"><%= @container.public_key %></TEXTAREA>
+        </p>
+      </div>
       <p>
         <INPUT TYPE="HIDDEN" NAME="container[id]" value="<%= @container.id %>"></INPUT>
         <INPUT TYPE="SUBMIT" value="Save"></INPUT>

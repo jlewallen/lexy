@@ -1,0 +1,12 @@
+<div>
+  <a href="/keys/new">Add</a>
+</div>
+
+<% @collection.each do |pair| %>
+<div>
+  <h3><a href="/keys/<%= pair.id %>"><%= pair.name %></a></h3>
+  <pre><%= pair.public %></pre>
+  <pre><%= pair.private %></pre>
+  <button data-href="/keys/<%= pair.id %>" data-method="DELETE" data-sync="yes">Delete</button>
+</div>
+<% end %>

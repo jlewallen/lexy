@@ -13,6 +13,8 @@ require_relative 'system'
 require_relative 'lxc'
 require_relative 'container'
 require_relative 'template'
+require_relative 'key_pair'
+require_relative 'startup'
 
 if __FILE__ == $0
   sys = System.new("/var/lib/lxc")

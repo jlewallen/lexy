@@ -10,6 +10,7 @@ class Container
   property :mask,       String, :required => true, :length => 5..32, :default => '255.255.255.0'
   property :status,     String, :required => true, :length => 32, :default => 'UNKNOWN'
   property :rc_startup, Text
+  property :public_key, Text
 
   def refresh
     self.status = lxc.status

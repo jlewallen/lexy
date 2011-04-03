@@ -1,0 +1,25 @@
+<div>
+  <form method="POST" action="<%= @resource.id.nil? ? "/keys" : "/keys/#{@resource.id}" %>" autocomplete="off">
+    <fieldset> 
+    <p>
+      <label for="name">Name</label><br/>
+      <INPUT NAME="key[name]" value="<%= @resource.name %>" class="text"></INPUT>
+    </p>
+    <p>
+      <label for="public">Public</label><br/>
+      <TEXTAREA NAME="key[public]" style="width: 100%; height: 70px;"><%= @resource.public %></TEXTAREA>
+    </p>
+    <p>
+      <label for="private">Private</label><br/>
+      <TEXTAREA NAME="key[private]" style="width: 100%; height: 400px;"><%= @resource.private %></TEXTAREA>
+    </p>
+    <p>
+      <% if @resource.id %> 
+      <INPUT TYPE="HIDDEN" name="key[id]" value="<%= @resource.id %>"></INPUT>
+      <% end %>
+      <INPUT TYPE="SUBMIT" value="Save"></INPUT>
+    </p>
+    </fieldset>
+  </form>
+</div>
+
