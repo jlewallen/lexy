@@ -9,7 +9,7 @@
   </div>
 
   <div class="span-8 last" style="text-align: right;">
-    <a href="/containers/<%= @container.name %>/log">Log</a>
+    <button data-href="/containers/<%= @container.name %>/log" data-method="GET">Log</button>
     <% if @container.running? %>
     <button data-href="/containers/<%= @container.name %>/stop" data-confirm="Are you sure?">Stop</button>
     <button data-href="/containers/<%= @container.name %>/restart" data-confirm="Are you sure?">Restart</button>

@@ -13,7 +13,10 @@ $(function() {
       }
     }
 
-    if ($(this).data("sync") == "yes") {
+    if (method == "GET") {
+      window.location = url;
+    }
+    else if ($(this).data("sync") == "yes") {
       var form = $('<FORM METHOD="POST" ACTION="' + url + '"></FORM>');
       form.hide().append('<INPUT NAME="_method" value="' + method + '" TYPE="HIDDEN" />').appendTo('body');
       form.submit();
