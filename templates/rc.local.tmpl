@@ -11,6 +11,8 @@
 # 
 # By default this script does nothing.
 
-bash /etc/rc.lexy.startup 2>&1 | logger -t lexy
+if [ -f /etc/rc.lexy.startup ]; then
+  (bash /etc/rc.lexy.startup 2>&1 | logger -t lexy) && mv /etc/rc.lexy.startup /etc/rc.lexy.startup.ran
+fi
 
 exit 0
