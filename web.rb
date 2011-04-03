@@ -156,4 +156,17 @@ delete '/startups/:id' do
   redirect '/startups'
 end
 
+post '/fstab/new' do
+  attrs = params[:fstab]
+  @resource = FstabEntry.new(attrs)
+  @resource.save
+  redirect '/containers/' + @resource.container.name unless request.xhr?
+end
+
+delete '/fstab/:id' do
+  @resource = FstabEntry.get(params[:id])
+  @resource.destroy
+  redirect '/containers/' + @resource.container.name unless request.xhr?
+end
+
 # EOF

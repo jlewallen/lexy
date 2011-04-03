@@ -11,6 +11,7 @@ class Container
   property :status,     String, :required => true, :length => 32, :default => 'UNKNOWN'
   property :rc_startup, Text
   property :public_key, Text
+  has n, :fstab_entries
 
   def hostname
     name

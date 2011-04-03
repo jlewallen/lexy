@@ -14,6 +14,7 @@ require_relative 'lxc'
 require_relative 'container'
 require_relative 'template'
 require_relative 'key_pair'
+require_relative 'fstab_entry'
 require_relative 'startup'
 
 if __FILE__ == $0
