@@ -1,7 +1,0 @@
-development:
-  adapter: sqlite3
-  database: db/lexy_dev.sqlite.db
-   
-production:
-  adapter: sqlite3
-  database: db/lexy_prod.sqlite.db
