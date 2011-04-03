@@ -1,6 +1,6 @@
 <div class="lxc-container-detail">
   <div class="span-4">
-    <div class="status <%= @container.status.downcase %>"><%= @container.status %></div>
+    <div class="status <%= @container.status.downcase %>"><span><%= @container.status %><span></div>
   </div>
 
   <div class="span-12">
@@ -20,18 +20,13 @@
     <button data-href="/containers/<%= @container.name %>/configure" data-method="POST">Configure</button>
   </div>
 
-  <% if @container.running? %>
-
-    <div class="span-24 processes">
-      <pre><%= h @container.processes %></pre>
-    </div>
-  
-  <% end %>
+  <div class="span-24">&nbsp;</div>
 
   <div class="span-24">
     <form method="POST" action="/containers/<%= @container.name %>" AUTOCOMPLETE="off">
-      <fieldset> 
       <div class="span-8">
+      <fieldset> 
+        <legend>Networking</legend>
         <p>
           <label for="address">Address</label><br/>
           <INPUT NAME="container[address]" value="<%= @container.address %>" class="text"></INPUT>
@@ -48,6 +43,7 @@
           <label for="gw">Gateway</label><br/>
           <INPUT NAME="container[gw]" value="<%= @container.gw %>" class="text"></INPUT>
         </p>
+      </fieldset>
       </div>
       <div class="span-16 last">
         <p>
@@ -65,7 +61,12 @@
         <INPUT TYPE="HIDDEN" NAME="container[id]" value="<%= @container.id %>"></INPUT>
         <INPUT TYPE="SUBMIT" value="Save"></INPUT>
       </p>
-      </fieldset>
     </form>
   </div>
+
+  <% if @container.running? %>
+    <div class="span-24 processes">
+      <pre><%= h @container.processes %></pre>
+    </div>
+  <% end %>
 </div>

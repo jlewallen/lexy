@@ -3,6 +3,6 @@
 # rc.lexy.startup
 # Lexy: <%= name %> <%= path %>
 
-<%= rc_startup %>
+<%= rc_startup.gsub(/\r\n/, "\n") %>
 
 exit 0
