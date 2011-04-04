@@ -170,6 +170,11 @@ end
 
 get '/startups/new' do
   @resource = Startup.new
+  @resource.script =<<EOS
+set -e -x
+
+apt-get -q -y install git-core vim
+EOS
   erb :startup_form
 end
 
@@ -177,7 +182,7 @@ post '/startups' do
   @resource = Startup.new(params[:startup])
   @resource.save
   flash[:notice] = "Startup created."
-  redirect '/startups'
+  redirect '/startups/' + params[:id]
 end
 
 get '/startups/:id' do
