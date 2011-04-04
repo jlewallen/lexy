@@ -61,7 +61,7 @@ post '/containers/:name' do
 end
 
 post '/containers/:name/run-startup' do
-  Stalker.enqueue('container.ssh', :name => params[:name], :command => "bash /etc/rc.lexy.startup | logger -t 'lexy'")
+  Stalker.enqueue('container.ssh', :name => params[:name], :command => "/usr/bin/nohup /bin/bash /etc/rc.lexy.startup < /dev/null 2>&1 | logger -t lexy &")
   redirect '/containers/' + params[:name] unless request.xhr?
 end
 

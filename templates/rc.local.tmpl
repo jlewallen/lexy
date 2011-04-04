@@ -15,7 +15,7 @@ echo "Starting..." | logger -t lexy
 
 if ! [ -f /etc/rc.lexy.startup.skip ]; then
   apt-get update
-  (bash /etc/rc.lexy.startup 2>&1 | logger -t lexy) && touch /etc/rc.lexy.startup.skip
+  (bash /etc/rc.lexy.startup | logger -t lexy 2>&1) && touch /etc/rc.lexy.startup.skip
 fi
 
 echo "Ready" | logger -t lexy

@@ -1,1 +1,1 @@
-clear; bundle exec stalk jobs.rb
+bundle exec stalk jobs.rb
