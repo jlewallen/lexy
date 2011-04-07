@@ -3,6 +3,6 @@ none <%= path %>/rootfs/proc proc defaults 0 0
 none <%= path %>/rootfs/sys sysfs defaults 0 0
 none <%= path %>/rootfs/var/lock tmpfs defaults 0 0
 none <%= path %>/rootfs/var/run tmpfs defaults 0 0
-<% fstab_entries.each do |e| %>
+<% mountings.each do |e| %>
 <%= e.path %> <%= Pathname.new(path).join('rootfs' + e.container_path) %> none bind 0 0
 <% end %>

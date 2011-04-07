@@ -76,6 +76,15 @@ class Container
     "root@" + address
   end
 
+  def mountings
+    fstab_entries + [
+      FstabEntry.new({
+        path: $lexy.join("templates"),
+        container_path: "/lexy"
+      })
+    ]
+  end
+
  private
   def lxc
     @lxc ||= LXC.new(self)

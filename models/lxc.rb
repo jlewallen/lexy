@@ -50,7 +50,7 @@ class LXC
     rfs = RootFS.new(rootfs_path)
     container.update_status("ROOTFS")
     rfs.configure
-    container.fstab_entries.each do |e|
+    container.mountings.each do |e|
       path = Pathname.new(rootfs_path.to_s + e.container_path)
       path.mkpath
       p path.to_s
