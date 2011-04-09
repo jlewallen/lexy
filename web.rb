@@ -181,12 +181,14 @@ end
 post '/startups' do
   @resource = Startup.new(params[:startup])
   @resource.save
+  @resource.write
   flash[:notice] = "Startup created."
-  redirect '/startups/' + params[:id]
+  redirect '/startups/' + @resource.id
 end
 
 get '/startups/:id' do
   @resource = Startup.get(params[:id])
+  @resource.read
   erb :startup_form
 end
 
@@ -194,6 +196,7 @@ post '/startups/:id' do
   @resource = Startup.get(params[:id])
   @resource.attributes = params[:startup]
   @resource.save
+  @resource.write
   flash[:notice] = "Startup saved."
   redirect '/startups/' + params[:id]
 end

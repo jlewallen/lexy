@@ -21,6 +21,8 @@ require_relative "models/lexy"
 
 include Stalker
 
+Startup.import
+
 job 'container.configure' do |args|
   args.symbolize_keys!
   container = Container.first(:name => args[:name])
