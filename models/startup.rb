@@ -30,7 +30,7 @@ class Startup
     path = template_directory
     path.mkpath
     File.open(startup_script_file, "w") do |f|
-      f.write(script)
+      f.write(script.gsub("\n\r", "\n").gsub("\015", ""))
     end
     startup_script_file.chmod(0755)
   end
