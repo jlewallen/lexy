@@ -15,6 +15,7 @@ echo "Starting..." | logger -t lexy
 
 if ! [ -f /etc/rc.lexy.startup.skip ]; then
   apt-get update
+  apt-get -q -y install vim screen
   (bash /etc/rc.lexy.startup | logger -t lexy 2>&1) && touch /etc/rc.lexy.startup.skip
 fi
 
