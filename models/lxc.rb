@@ -56,6 +56,7 @@ class LXC
       p path.to_s
     end
     rfs.path.join("home").mkpath
+    rfs.path.join("tmp").chmod(01777)
     binding = @container.get_binding
     container.update_status("TEMPLATES")
     FileTemplate.new("config.tmpl").write(path.join("config"), binding)
