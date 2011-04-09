@@ -77,12 +77,15 @@ class Container
   end
 
   def mountings
-    fstab_entries + [
-      FstabEntry.new({
-        path: $lexy.join("templates"),
-        container_path: "/lexy"
-      })
-    ]
+    all = fstab_entries.map do |e|
+      { path: e.path, container_path: e.container_path }
+    end
+    all << {
+      path: $lexy.join("templates"),
+      container_path: "/lexy"
+    }
+    p all
+    all.map { |e| OpenStruct.new(e) }
   end
 
  private
