@@ -19,12 +19,6 @@ class Startup
     end
   end
 
-  def self.export
-    Startup.all.each do |s|
-      s.write
-    end
-  end
-
   def read
     if startup_script_file.file?
       self.script = IO.read(startup_script_file)
