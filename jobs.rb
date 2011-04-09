@@ -29,6 +29,15 @@ job 'container.configure' do |args|
   container.configure
 end
 
+job 'container.recycle' do |args|
+  args.symbolize_keys!
+  container = Container.first(:name => args[:name])
+  container.stop
+  container.clean
+  container.configure
+  container.start
+end
+
 job 'container.clean' do |args|
   args.symbolize_keys!
   Container.first(:name => args[:name]).clean

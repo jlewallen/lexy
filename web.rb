@@ -85,6 +85,11 @@ post '/containers/:name/start' do
   redirect '/containers/' + params[:name] unless request.xhr?
 end
 
+post '/containers/:name/recycle' do
+  Stalker.enqueue('container.recycle', :name => params[:name])
+  redirect '/containers/' + params[:name] unless request.xhr?
+end
+
 post '/containers/:name/stop' do
   Stalker.enqueue('container.stop', :name => params[:name])
   redirect '/containers/' + params[:name] unless request.xhr?
