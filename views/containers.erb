@@ -1,12 +1,10 @@
-<div>
-
-  <% @containers.each do |container| %>
-  <div class="lxc-container-small span-11">
-    <div class="status <%= container.status.downcase %>"><%= container.status %></div>
-    <div class="name"><a href="/containers/<%= container.name %>"><%= container.name %></a></div>
-    <div class="path"><%= container.path %></div>
-    <div class="address"><%= container.address %></div>
+<% @containers.each_with_index do |container, i| %>
+  <div class="lxc-container-small span-12 <%= (i % 2) == 1 ? 'last' : '' %>">
+    <div class="box">
+      <div class="status <%= container.status.downcase %>"><%= container.status %></div>
+      <div class="name"><a href="/containers/<%= container.name %>"><%= container.name %></a></div>
+      <div class="address"><%= container.address %></div>
+      <div class="path"><%= container.path %></div>
+    </div>
   </div>
-  <% end %>
-
-</div>
+<% end %>

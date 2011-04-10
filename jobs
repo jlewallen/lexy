@@ -1,1 +1,4 @@
+#!/bin/bash
+
+source /usr/local/rvm/scripts/rvm
 bundle exec stalk jobs.rb

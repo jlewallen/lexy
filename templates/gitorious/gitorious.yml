@@ -1,0 +1,94 @@
+development:
+  # The session secret key (`apg -m 64` is always useful for this kinda stuff)
+  cookie_secret: HievdaibAinUnfagvodEdaytsaydWivCyfreOkKiosavDovDevBatyabdabFasfafedevpidPokCarWaGloicAtcajKoabmeharditMevOfPybIdthAvUrthEmceect_keuzCawHetweklUsFifDogazviOleickocbihoDrapuchujotvethubTejCoavrajojhisVacfunHegOskOchCezgochtyRacoidGod{DreujvuAworvyewnEdWollivCawtouwebyurgUnEalwufnachayFlorj2QuenotThuelbOakmockedeciamveadduzVoguftichcibNocBempIkbekyelmIdyoatEucciphtunsefavdercUdibtheef
+
+  # The path where git repositories are stored. The actual (bare) repositories
+  # resides in repository_base_path/#{project.slug}/#{repository.name}.git/:
+  repository_base_path: "/var/git/repositories"
+
+  # Stuff that's in the html <head>. custom stats javascript code etc
+  extra_html_head_data:
+
+  # System message that will appear on all pages if present
+  system_message:
+
+  # Port the ./script/gitorious script should use:
+  gitorious_client_port: 3000
+
+  # Host the ./script/gitorious script should use:
+  gitorious_client_host: git.local
+
+  # Host which is serving the gitorious app, eg "gitorious.org"
+  gitorious_host: git.local
+
+  # User which is running git daemon
+  gitorious_user: git
+
+  # Email spam on server errors to:
+  exception_notification_emails: christianATcjohansen.no
+
+  # Mangle visible e-mail addresses (spam protection)
+  mangle_email_addresses: true
+
+  # Enable or Disable Public Mode (true) or Private Mode (false)
+  public_mode: false
+
+  # Define your locale
+  locale: en
+
+  # Where should we store generated tarballs?
+  # (should be readable by webserver, since we tell it to send the file using
+  # X-Sendfile)
+  archive_cache_dir: "/var/git/tarballs"
+  # Which directory should we work in when we generate tarballs, before moving
+  # them to the above dir?
+  archive_work_dir: "/var/git/tarballs-work"
+
+  # is it only site admins who can create new projects?
+  only_site_admins_can_create_projects: true
+
+  # Should we hide HTTP clone urls?
+  hide_http_clone_urls: false
+
+  # Is this gitorious.org? Read: should we have a very flashy homepage?
+  is_gitorious_dot_org: false
+
+production:
+  cookie_secret: HievdaibAinUnfagvodEdaytsaydWivCyfreOkKiosavDovDevBatyabdabFasfafedevpidPokCarWaGloicAtcajKoabmeharditMevOfPybIdthAvUrthEmceect_keuzCawHetweklUsFifDogazviOleickocbihoDrapuchujotvethubTejCoavrajojhisVacfunHegOskOchCezgochtyRacoidGod{DreujvuAworvyewnEdWollivCawtouwebyurgUnEalwufnachayFlorj2QuenotThuelbOakmockedeciamveadduzVoguftichcibNocBempIkbekyelmIdyoatEucciphtunsefavdercUdibtheef
+
+  repository_base_path: "/home/git/repositories"
+  extra_html_head_data:
+  system_message:
+  gitorious_client_port: 80
+  gitorious_client_host: git.myserver.com
+  gitorious_host: git.myserver.com
+  gitorious_user: git
+  exception_notification_emails: christianATcjohansen.no
+  mangle_email_addresses: true
+  public_mode: false
+  locale: en
+  archive_cache_dir: "/var/git/tarballs"
+  archive_work_dir: "/var/git/tarballs-work"
+  only_site_admins_can_create_projects: true
+  hide_http_clone_urls: false
+  is_gitorious_dot_org: false
+
+test:
+  cookie_secret: HievdaibAinUnfagvodEdaytsaydWivCyfreOkKiosavDovDevBatyabdabFasfafedevpidPokCarWaGloicAtcajKoabmeharditMevOfPybIdthAvUrthEmceect_keuzCawHetweklUsFifDogazviOleickocbihoDrapuchujotvethubTejCoavrajojhisVacfunHegOskOchCezgochtyRacoidGod{DreujvuAworvyewnEdWollivCawtouwebyurgUnEalwufnachayFlorj2QuenotThuelbOakmockedeciamveadduzVoguftichcibNocBempIkbekyelmIdyoatEucciphtunsefavdercUdibtheef
+
+  repository_base_path: "/var/git/repositories"
+  extra_html_head_data:
+  system_message:
+  gitorious_client_port: 3000
+  gitorious_client_host: localhost
+  gitorious_host: localhost
+  gitorious_user: git
+  exception_notification_emails: christianATcjohansen.no
+  mangle_email_addresses: true
+  public_mode: true
+  locale: en
+  archive_cache_dir: "/var/git/tarballs"
+  archive_work_dir: "/var/git/tarballs-work"
+  only_site_admins_can_create_projects: false
+  hide_http_clone_urls: false
+  is_gitorious_dot_org: false

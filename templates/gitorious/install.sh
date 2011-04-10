@@ -20,8 +20,8 @@ mkdir -p ~/src
 
 pushd ~/
 /lexy/ruby/startup.sh
-source /usr/local/rvm/scripts/rvm
-rvm use 1.9.2-head
+[[ -s "/usr/local/rvm/scripts/rvm" ]] && source "/usr/local/rvm/scripts/rvm"  # This loads RVM into a shell session.
+rvm --default use 1.9.2-head
 popd
 
 # MySQL Bindings
@@ -40,6 +40,9 @@ apt-get install -y libonig-dev libyaml-dev geoip-bin libgeoip-dev libgeoip1
 apt-get install -y imagemagick libmagickwand-dev
 
 # MySQL
+export DEBIAN_FRONTEND=noninteractive
+echo mysql-server-5.1 mysql-server/root_password password '' | debconf-set-selections
+echo mysql-server-5.1 mysql-server/root_password_again password '' | debconf-set-selections
 apt-get install -y mysql-client-5.1 mysql-server-5.1 libmysqlclient15-dev
 
 # Sphinx and Ultrasphinx
@@ -57,17 +60,13 @@ pushd ~/src
 wget http://apache.mirrors.redwire.net//activemq/apache-activemq/5.4.2/apache-activemq-5.4.2-bin.tar.gz
 tar xzvf apache-activemq-5.4.2-bin.tar.gz  -C /usr/local/
 popd
+
 sh -c 'echo "export ACTIVEMQ_HOME=/usr/local/apache-activemq-5.4.2" >> /etc/activemq.conf'
 sh -c 'echo "export JAVA_HOME=/usr/" >> /etc/activemq.conf'
 adduser --system --no-create-home activemq
 chown -R activemq /usr/local/apache-activemq-5.4.2/data
 
-vim /usr/local/apache-activemq-5.4.2/conf/activemq.xml
-# <networkConnectors>
-#   <networkConnector name="localhost" uri="static://(tcp://127.0.0.1:61616)"/>
-# </networkConnectors>
-# Newer versions block doesn't exist... add this one:
-# <transportConnector name="stomp" uri="stomp://0.0.0.0:61613"/>
+cp /lexy/gitorious/activemq.xml /usr/local/apache-activemq-5.4.2/conf/activemq.xml
 
 cd ~/src
 wget http://launchpadlibrarian.net/15645459/activemq
@@ -85,7 +84,7 @@ apt-get install -y apache2
 apt-get install -y nginx
 
 # Gitorious Source
-adduser jlewallen
+adduser --system --group --shell=/bin/bash jlewallen
 groupadd gitorious
 usermod -a -G gitorious jlewallen
 
@@ -105,6 +104,11 @@ chmod ug+x script/*
 chmod -R g+w config/ log/ public/ tmp/
 
 # FIX PATHS IN THESE
+
+sed -i 's@/opt/ruby-enterprise/bin/ruby@ruby@g' /var/www/git.myserver.com/gitorious/doc/templates/ubuntu/git-ultrasphinx 
+sed -i 's@/opt/ruby-enterprise/bin/ruby@ruby@g' /var/www/git.myserver.com/gitorious/doc/templates/ubuntu/git-daemon
+sed -i 's@/var/www/gitorious@/var/www/git.myserver.com/gitorious@g' /var/www/git.myserver.com/gitorious/doc/templates/ubuntu/git-ultrasphinx
+sed -i 's@/var/www/gitorious@/var/www/git.myserver.com/gitorious@g' /var/www/git.myserver.com/gitorious/doc/templates/ubuntu/git-daemon
 ln -s /var/www/git.myserver.com/gitorious/doc/templates/ubuntu/git-ultrasphinx /etc/init.d/git-ultrasphinx
 ln -s /var/www/git.myserver.com/gitorious/doc/templates/ubuntu/git-daemon /etc/init.d/git-daemon
 
@@ -117,35 +121,30 @@ update-rc.d -f git-ultrasphinx start 99 2 3 4 5 .
 cd /var/www/git.myserver.com/gitorious && bundle install
 
 # Home for Git repositories...
-adduser git
+adduser --system --group --shell=/bin/bash git
 usermod -a -G gitorious git
-mkdir /var/git
-mkdir /var/git/repositories
-mkdir /var/git/tarballs
-mkdir /var/git/tarball-work
-chown -R git:git /var/git
-
-su git
-mkdir ~/.ssh
-chmod 700 ~/.ssh
-touch ~/.ssh/authorized_keys
+cat > ~git/.bashrc <<EOS
+source /usr/local/rvm/scripts/rvm
+EOS
+mkdir -p ~git
+mkdir -p ~git/repositories
+mkdir -p ~git/tarballs
+mkdir -p ~git/tarball-work
+mkdir -p ~git/.ssh
+chmod 700 ~git/.ssh
+touch ~git/.ssh/authorized_keys
+chown -R git. ~git/
 
 cd /var/www/git.myserver.com/gitorious
-cp config/database.sample.yml config/database.yml
-cp config/gitorious.sample.yml config/gitorious.yml
+cp /lexy/gitorious/database.yml /var/www/git.myserver.com/gitorious/config
+cp /lexy/gitorious/gitorious.yml /var/www/git.myserver.com/gitorious/config
 cp config/broker.yml.example config/broker.yml
 
-apg -m 64
+# apg -m 64
 
-# SETUP CONFIGURATION
-
-mysql -u root -p <<EOS
+mysql -u root <<EOS
 create database gitorious;
-create database gitorious_test;
-create database gitorious_dev;
-grant all privileges on gitorious.* to root@localhost identified by 'asdfasdf';
-grant all privileges on gitorious_test.* to root@localhost;
-grant all privileges on gitorious_dev.* to root@localhost;
+grant all privileges on gitorious.* to root@localhost identified by '';
 EOS
 
 cd /var/www/git.myserver.com/gitorious
@@ -155,10 +154,10 @@ chmod ug+x script/poller
 
 /etc/init.d/activemq start
 env RAILS_ENV=production /etc/init.d/git-daemon start
-su git -c "cd /var/www/git.myserver.com/gitorious && env RAILS_ENV=production script/poller run"
 
 # Moment of truth...
-su git -c "cd /var/www/git.myserver.com/gitorious && script/server -e production"
+su - git -c "cd /var/www/git.myserver.com/gitorious && env RAILS_ENV=production script/poller run"
+su - git -c "cd /var/www/git.myserver.com/gitorious && script/server -e production"
 
 # Passenger
 gem install passenger
@@ -173,6 +172,3 @@ ln -s /var/www/git.myserver.com/conf/vhost.conf /etc/apache2/sites-available/git
 a2ensite git.myserver.com
 
 # EOF
-
-
-

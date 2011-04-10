@@ -43,6 +43,12 @@ class LXC
     @name = container.name
   end
 
+  def install_apt_proxy(rfs)
+    cfg = Pathname.new("/etc/apt/apt.conf.d/01proxy")
+    return unless cfg.file?
+    FileUtils::Verbose::cp(cfg, rfs.path.join("etc/apt/apt.conf.d/01proxy"))
+  end
+
   def configure
     container.update_status("CONFIGURING")
     path.mkpath
@@ -59,6 +65,7 @@ class LXC
     rfs.path.join("tmp").chmod(01777)
     binding = @container.get_binding
     container.update_status("TEMPLATES")
+    install_apt_proxy(rfs)
     FileTemplate.new("config.tmpl").write(path.join("config"), binding)
     FileTemplate.new("fstab.tmpl").write(path.join("fstab"), binding)
     FileTemplate.new("hosts.tmpl").write(rfs.path.join("etc/hosts"), binding)
