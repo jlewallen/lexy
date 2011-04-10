@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
-require_relative (File.dirname(__FILE__) + '/../../config/environment')
+require File.dirname(__FILE__) + '/../config/environment'
 ActionMailer::Base.raise_delivery_errors = false
 ActionMailer::Base.delivery_method = :test
 

@@ -6,22 +6,28 @@
 #
 set -e -x
 
-# dpkg-reconfigure tzdata
-
-apt-get install -y git-core git-svn
-apt-get install -y wget
-apt-get install -y apg build-essential libpcre3 libpcre3-dev sendmail make zlib1g zlib1g-dev ssh
+apt-get install -q -y git-core git-svn
+apt-get install -q -y wget
+apt-get install -q -y apg build-essential libpcre3 libpcre3-dev sendmail make zlib1g zlib1g-dev ssh
 
 # Ruby 1.9 from source
-apt-get -y install libc6-dev libssl-dev libmysql++-dev libsqlite3-dev libreadline5-dev
+apt-get install -q -y libc6-dev libssl-dev libmysql++-dev libsqlite3-dev libreadline5-dev
 
 cd
 mkdir -p ~/src
 
 pushd ~/
-/lexy/ruby/startup.sh
-[[ -s "/usr/local/rvm/scripts/rvm" ]] && source "/usr/local/rvm/scripts/rvm"  # This loads RVM into a shell session.
-rvm --default use 1.9.2-head
+apt-get install -q -y curl subversion vim ruby
+apt-get install -q -y bison openssl libreadline5 libreadline-dev zlib1g zlib1g-dev libssl-dev libsqlite3-0 libsqlite3-dev sqlite3 libreadline-dev libxml2-dev autoconf
+apt-get install -q -y beanstalkd
+if ! [ -d /usr/local/rvm ]; then
+  /bin/bash < <( curl -s https://rvm.beginrescueend.com/install/rvm )
+  rvm install ree
+  source /usr/local/rvm/scripts/rvm
+  rvm --default use ree
+  gem install bundler
+fi
+source /usr/local/rvm/scripts/rvm
 popd
 
 # MySQL Bindings
@@ -34,16 +40,16 @@ make && make install
 popd
 
 # Common Libraries
-apt-get install -y libonig-dev libyaml-dev geoip-bin libgeoip-dev libgeoip1
+apt-get install -q -y libonig-dev libyaml-dev geoip-bin libgeoip-dev libgeoip1
 
 # ImageMagick
-apt-get install -y imagemagick libmagickwand-dev
+apt-get install -q -y imagemagick libmagickwand-dev
 
 # MySQL
 export DEBIAN_FRONTEND=noninteractive
 echo mysql-server-5.1 mysql-server/root_password password '' | debconf-set-selections
 echo mysql-server-5.1 mysql-server/root_password_again password '' | debconf-set-selections
-apt-get install -y mysql-client-5.1 mysql-server-5.1 libmysqlclient15-dev
+apt-get install -q -y mysql-client-5.1 mysql-server-5.1 libmysqlclient15-dev
 
 # Sphinx and Ultrasphinx
 pushd ~/src
@@ -55,7 +61,7 @@ make && make install
 popd
 
 # ActiveMQ
-apt-get install -y uuid uuid-dev openjdk-6-jre
+apt-get install -q -y uuid uuid-dev openjdk-6-jre
 pushd ~/src
 wget http://apache.mirrors.redwire.net//activemq/apache-activemq/5.4.2/apache-activemq-5.4.2-bin.tar.gz
 tar xzvf apache-activemq-5.4.2-bin.tar.gz  -C /usr/local/
@@ -76,7 +82,7 @@ chmod +x /etc/init.d/activemq
 update-rc.d activemq defaults
 
 # Memcache
-apt-get install -y memcached
+apt-get install -q -y memcached
 update-rc.d memcached defaults
 
 # Gitorious Source
@@ -113,15 +119,12 @@ update-rc.d -f git-daemon start 99 2 3 4 5 .
 update-rc.d -f git-ultrasphinx start 99 2 3 4 5 .
 
 # Gems
-# cd /var/www/git.myserver.com/gitorious && sed -i 's@~> 2.2.8@~> 2.3.3@g' Gemfile
 cd /var/www/git.myserver.com/gitorious && bundle install
 
-# Home for Git repositories...
+# Home for Git Repositories
 adduser --system --group --shell=/bin/bash git
 usermod -a -G gitorious git
-cat > ~git/.bashrc <<EOS
-source /usr/local/rvm/scripts/rvm
-EOS
+echo "source /usr/local/rvm/scripts/rvm" > ~git/.bashrc
 mkdir -p ~git
 mkdir -p ~git/repositories
 mkdir -p ~git/tarballs
@@ -136,8 +139,6 @@ cp /lexy/gitorious/database.yml /var/www/git.myserver.com/gitorious/config
 cp /lexy/gitorious/gitorious.yml /var/www/git.myserver.com/gitorious/config
 cp config/broker.yml.example config/broker.yml
 
-# apg -m 64
-
 mysql -u root <<EOS
 create database gitorious;
 grant all privileges on gitorious.* to root@localhost identified by '';
@@ -151,7 +152,7 @@ chmod ug+x script/poller
 env RAILS_ENV=production /etc/init.d/activemq start
 env RAILS_ENV=production /etc/init.d/git-daemon start
 
-# Poller and databases...
+# Poller and Databases...
 cp /lexy/gitorious/setup-gitorious.rb /var/www/git.myserver.com/gitorious/script
 chmod 755 /var/www/git.myserver.com/gitorious/script/setup-gitorious.rb
 su - git -c "cd /var/www/git.myserver.com/gitorious && env RAILS_ENV=production script/poller start"
@@ -170,7 +171,7 @@ su - git -c "cd /var/www/git.myserver.com/gitorious && env RAILS_ENV=production 
 # a2ensite git.myserver.com
 
 # Apache/NGINX
-apt-get install -y nginx
+apt-get install -q -y nginx
 
 pushd /etc/ssl/private
 openssl genrsa -out server.key 1024
