@@ -1,3 +1,6 @@
 [submodule "opscode-cookbooks"]
 	path = opscode-cookbooks
 	url = git://github.com/opscode/cookbooks.git
+[submodule "gitorious-cookbook"]
+	path = gitorious-cookbook
+	url = https://github.com/fnichol/chef-gitorious

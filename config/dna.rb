@@ -2,7 +2,9 @@ require 'rubygems'
 require 'json'
 
 dna = {
-  "recipes" => [ "default" ]
+  "recipes" => [
+    "default", "git", "vim", "rsync"
+  ]
 }
 
 instances = {
