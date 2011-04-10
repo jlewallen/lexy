@@ -6,12 +6,18 @@ directory node[:nginx][:log_dir] do
   action :create
 end
 
+service "nginx" do
+  supports :status => true, :restart => true, :reload => true
+  action [ :enable, :start ]
+end
+
 template "nginx.conf" do
   path "#{node[:nginx][:dir]}/nginx.conf"
   source "nginx.conf.erb"
   owner "root"
   group "root"
   mode 0644
+  notifies :restart, resources(:service => "nginx"), :delayed
 end
 
 template "#{node[:nginx][:dir]}/sites-available/default" do
@@ -19,6 +25,7 @@ template "#{node[:nginx][:dir]}/sites-available/default" do
   owner "root"
   group "root"
   mode 0644
+  notifies :restart, resources(:service => "nginx"), :delayed
 end
 
 node[:nginx][:sites].each do |site|
@@ -30,6 +37,7 @@ node[:nginx][:sites].each do |site|
     owner "root"
     group "root"
     mode 0644
+    notifies :restart, resources(:service => "nginx"), :delayed
   end
 
   link enabled do
@@ -42,6 +50,7 @@ if node[:nginx][:ssl][:self_signed] then
     interpreter "bash"
     creates "/etc/ssl/private/server.key"
     cwd "/etc/ssl/private"
+    notifies :restart, resources(:service => "nginx"), :delayed
     code <<-EOH
     openssl genrsa -out server.key 1024
     openssl req -new -subj '/C=US/ST=California/L=Redlands/CN=www.self-signed.com' -key server.key -out server.csr
@@ -50,9 +59,4 @@ if node[:nginx][:ssl][:self_signed] then
     openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt
     EOH
   end
-end
-
-service "nginx" do
-  supports :status => true, :restart => true, :reload => true
-  action [ :enable, :start ]
 end

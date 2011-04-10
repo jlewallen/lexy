@@ -14,6 +14,10 @@ namespace :cook do
     sh "chef-solo -c #{dir}/config/solo.rb -j #{dir}/config/dna-test.json"
   end
 
+  task :gitorious => :default do
+    sh "chef-solo -c #{dir}/config/solo.rb -j #{dir}/config/dna-gitorious.json"
+  end
+
   task :custom => :default do
     dna = {
       "recipes" => ENV['recipes'].split(',')

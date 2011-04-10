@@ -2,16 +2,6 @@ require 'rubygems'
 require 'json'
 
 dna = {
-  "recipes" => [
-    "default", "git", "vim", "rsync",
-    "java", "glassfish",
-    "rvm",
-    "jenkins",
-    "nexus",
-    "gerrit",
-    "nginx"
-  ],
-
   "rvm" => {
     "rubies" => [ "ree", "1.9.2" ]
   },
@@ -22,6 +12,12 @@ dna = {
         :path => "/gerrit",
         :name => "gerrit",
         :destination => "http://127.0.0.1:8082/gerrit"
+      },
+
+      {
+        :path => "/jenkins",
+        :name => "jenkins",
+        :destination => "http://127.0.0.1:8081/jenkins"
       }
     ]
   },
@@ -33,6 +29,22 @@ dna = {
 
 instances = {
   "test" => {
+    "recipes" => [
+      "default", "git", "vim", "rsync",
+      "java", "glassfish",
+      "rvm",
+      "jenkins",
+      "nexus",
+      "gerrit",
+      "nginx"
+    ],
+  },
+
+  "gitorious" => {
+    "recipes" => [
+      "default", "git", "vim", "rsync",
+      "java", "gitorious"
+    ],
   }
 }
 
