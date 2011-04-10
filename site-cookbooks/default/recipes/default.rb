@@ -11,3 +11,9 @@ end
 %w(vim screen).each do |p|
   package p
 end
+
+directory node[:data] do
+  mode "0755"
+  action :create
+  recursive true
+end
