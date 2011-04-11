@@ -1,7 +1,6 @@
 cookbook_path [ 
-                File.join(File.dirname(__FILE__), '..', "site-cookbooks"),
-                # File.join(File.dirname(__FILE__), '..', "opscode-cookbooks"),
-                File.join(File.dirname(__FILE__), '..', "cookbooks")
+                File.join(File.dirname(__FILE__), '..', "cookbooks"),
+                File.join(File.dirname(__FILE__), '..', "site-cookbooks")
               ]
 log_level :debug
 file_store_path File.join(File.dirname(__FILE__), '..')

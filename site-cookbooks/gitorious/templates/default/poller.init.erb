@@ -1,0 +1,14 @@
+#!/bin/sh
+# Start/stop the git poller    
+#    
+### BEGIN INIT INFO    
+# Provides:          git-poller    
+# Required-Start:    stomp    
+# Required-Stop:    
+# Default-Start:     2 3 4 5    
+# Default-Stop:      1    
+# Short-Description: Gitorious poller    
+# Description:       Gitorious poller    
+### END INIT INFO    
+
+/bin/su - git -c "cd /var/www/git.myserver.com/gitorious && RAILS_ENV=production script/poller $@"

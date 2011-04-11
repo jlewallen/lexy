@@ -1,6 +1,7 @@
 #
 #
 
+require 'rubygems'
 require 'json'
 
 task :default do
@@ -15,7 +16,7 @@ namespace :cook do
   end
 
   task :gitorious => :default do
-    sh "chef-solo -c #{dir}/config/solo-gitorious.rb -j #{dir}/config/dna-gitorious.json"
+    sh "chef-solo -c #{dir}/config/solo.rb -j #{dir}/config/dna-gitorious.json"
   end
 
   task :custom => :default do

@@ -13,11 +13,15 @@ dna = {
         :name => "gerrit",
         :destination => "http://127.0.0.1:8082/gerrit"
       },
-
       {
         :path => "/jenkins",
         :name => "jenkins",
         :destination => "http://127.0.0.1:8081/jenkins"
+      },
+      {
+        :path => "/gitorious",
+        :name => "gitorious",
+        :destination => "http://127.0.0.1:3000"
       }
     ]
   },
@@ -42,8 +46,12 @@ instances = {
 
   "gitorious" => {
     "recipes" => [
-      "gitorious"
+      "gitorious",
+      "nginx"
     ],
+    "mysql" => {
+      "server_root_password" => "asdfasdf"
+    }
   }
 }
 
