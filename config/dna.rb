@@ -42,8 +42,7 @@ instances = {
 
   "gitorious" => {
     "recipes" => [
-      "default", "git", "vim", "rsync",
-      "java", "gitorious"
+      "gitorious"
     ],
   }
 }
