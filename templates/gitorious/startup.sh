@@ -6,12 +6,14 @@
 #
 set -e -x
 
-apt-get install -q -y git-core git-svn
-apt-get install -q -y wget
-apt-get install -q -y apg build-essential libpcre3 libpcre3-dev sendmail make zlib1g zlib1g-dev ssh
-
-# Ruby 1.9 from source
+apt-get install -q -y git-core git-svn wget
+apt-get install -q -y apg build-essential libpcre3 libpcre3-dev sendmail make zlib1g zlib1g-dev
 apt-get install -q -y libc6-dev libssl-dev libmysql++-dev libsqlite3-dev libreadline5-dev
+
+echo "Starting Ruby Installation..."
+
+# wget http://rubyforge.org/frs/download.php/68718/ruby-enterprise_1.8.7-2010.01_i386.deb
+# dpkg -i ruby-enterprise_1.8.7-2010.01_i386.deb
 
 cd
 mkdir -p ~/src
@@ -27,7 +29,6 @@ if ! [ -d /usr/local/rvm ]; then
   rvm --default use ree
   gem install bundler
 fi
-source /usr/local/rvm/scripts/rvm
 popd
 
 # MySQL Bindings
@@ -50,6 +51,15 @@ export DEBIAN_FRONTEND=noninteractive
 echo mysql-server-5.1 mysql-server/root_password password '' | debconf-set-selections
 echo mysql-server-5.1 mysql-server/root_password_again password '' | debconf-set-selections
 apt-get install -q -y mysql-client-5.1 mysql-server-5.1 libmysqlclient15-dev
+
+# MySQL Database Directory
+service mysql stop
+mv /var/lib/mysql /var/lib/mysql-old
+if ! [ -d /data/mysql ]; then
+  mv /var/lib/mysql-old /data/mysql
+fi
+ln -s /data/mysql /var/lib/mysql
+service mysql start
 
 # Sphinx and Ultrasphinx
 pushd ~/src
@@ -85,25 +95,37 @@ update-rc.d activemq defaults
 apt-get install -q -y memcached
 update-rc.d memcached defaults
 
-# Gitorious Source
-adduser --system --group --shell=/bin/bash jlewallen
+# Gitorious Group
 groupadd gitorious
-usermod -a -G gitorious jlewallen
 
+# Home for Git Repositories
+adduser --system --group --shell=/bin/bash --home=/data/git git
+usermod -a -G gitorious git
+echo "source /usr/local/rvm/scripts/rvm" > ~git/.bashrc
+mkdir -p ~git
+mkdir -p ~git/repositories
+mkdir -p ~git/tarballs
+mkdir -p ~git/tarball-work
+mkdir -p ~git/.ssh
+chmod 700 ~git/.ssh
+touch ~git/.ssh/authorized_keys
+chown -R git. ~git/
 mkdir -p /var/www/git.myserver.com
-chown jlewallen:gitorious /var/www/git.myserver.com
+chown git:gitorious /var/www/git.myserver.com
 chmod -R g+sw /var/www/git.myserver.com
 
-cd /var/www/git.myserver.com
-mkdir log
-mkdir conf
+pushd /var/www/git.myserver.com
+mkdir -p log
+mkdir -p conf
 git clone git://gitorious.org/gitorious/mainline.git gitorious
 ln -s /var/www/git.myserver.com/gitorious/script/gitorious /usr/local/bin/gitorious
-cd gitorious/
+pushd gitorious
 rm public/.htaccess
 mkdir -p tmp/pids
 chmod ug+x script/*
 chmod -R g+w config/ log/ public/ tmp/
+popd
+popd
 
 # Setup paths for the startup stuff...
 sed -i 's@/opt/ruby-enterprise/bin/ruby@ruby@g' /var/www/git.myserver.com/gitorious/doc/templates/ubuntu/git-ultrasphinx 
@@ -120,19 +142,6 @@ update-rc.d -f git-ultrasphinx start 99 2 3 4 5 .
 
 # Gems
 cd /var/www/git.myserver.com/gitorious && bundle install
-
-# Home for Git Repositories
-adduser --system --group --shell=/bin/bash git
-usermod -a -G gitorious git
-echo "source /usr/local/rvm/scripts/rvm" > ~git/.bashrc
-mkdir -p ~git
-mkdir -p ~git/repositories
-mkdir -p ~git/tarballs
-mkdir -p ~git/tarball-work
-mkdir -p ~git/.ssh
-chmod 700 ~git/.ssh
-touch ~git/.ssh/authorized_keys
-chown -R git. ~git/
 
 cd /var/www/git.myserver.com/gitorious
 cp /lexy/gitorious/database.yml /var/www/git.myserver.com/gitorious/config
@@ -159,20 +168,8 @@ su - git -c "cd /var/www/git.myserver.com/gitorious && env RAILS_ENV=production 
 su - git -c "cd /var/www/git.myserver.com/gitorious && env RAILS_ENV=production rake db:setup"
 su - git -c "cd /var/www/git.myserver.com/gitorious && env RAILS_ENV=production script/setup-gitorious.rb"
 
-# Passenger
-# gem install passenger
-# apt-get install libcurl4-openssl-dev apache2-prefork-dev libapr1-dev libaprutil1-dev
-# passenger-install-apache2-module
-# a2enmod rewrite
-# a2enmod deflate
-# a2enmod passenger
-# a2enmod expires
-# ln -s /var/www/git.myserver.com/conf/vhost.conf /etc/apache2/sites-available/git.myserver.com
-# a2ensite git.myserver.com
-
 # Apache/NGINX
 apt-get install -q -y nginx
-
 pushd /etc/ssl/private
 openssl genrsa -out server.key 1024
 openssl req -new -subj '/C=US/ST=California/L=Redlands/CN=www.self-signed.com' -key server.key -out server.csr
@@ -180,13 +177,11 @@ cp server.key server.key.org
 openssl rsa -in server.key.org -out server.key
 openssl x509 -req -days 365 -in server.csr -signkey server.key -out server.crt
 popd
-
 cp /lexy/gitorious/default /etc/nginx/sites-available
-
 /etc/init.d/nginx restart
 
+# Start things up!
 gem install thin
-
 su - git -c "cd /var/www/git.myserver.com/gitorious && thin -e production -d start"
 
 # EOF

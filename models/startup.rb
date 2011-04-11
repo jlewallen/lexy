@@ -5,7 +5,6 @@ class Startup
   property :id,           Serial
   property :name,         String, :required => true, :length => 2..64, :unique => true
   property :description,  String, :length => 255
-  property :script,       Text,   :required => true
 
   def self.import
     Startup.templates_directory.children.each do |e|
@@ -19,20 +18,14 @@ class Startup
     end
   end
 
-  def read
-    if startup_script_file.file?
-      self.script = IO.read(startup_script_file)
-      save
-    end
+  def script
+    @script ||= read
   end
 
-  def write
-    path = template_directory
-    path.mkpath
-    File.open(startup_script_file, "w") do |f|
-      f.write(script.gsub("\n\r", "\n").gsub("\015", ""))
-    end
-    startup_script_file.chmod(0755)
+  def script=(value)
+    @script = value
+    write
+    @script
   end
 
   def self.templates_directory
@@ -45,5 +38,22 @@ class Startup
 
   def startup_script_file
     template_directory.join("startup.sh")
+  end
+
+  def read
+    if startup_script_file.file?
+      p "Reading #{startup_script_file}"
+      IO.read(startup_script_file)
+    end
+  end
+
+  def write(data = script)
+    path = template_directory
+    path.mkpath
+    File.open(startup_script_file, "w") do |f|
+      f.write(data.gsub("\n\r", "\n").gsub("\015", ""))
+    end
+    p "Writing #{startup_script_file}"
+    startup_script_file.chmod(0755)
   end
 end
