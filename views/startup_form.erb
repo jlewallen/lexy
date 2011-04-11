@@ -13,6 +13,9 @@
       <label for="private">Script</label><br/>
       <TEXTAREA NAME="startup[script]" style="width: 100%; height: 400px;"><%= @resource.script %></TEXTAREA>
     </p>
+    <p style="float: right;">
+      <button data-href="/startups/<%= @resource.id %>" data-method="DELETE" data-sync="yes" data-confirm="Are you sure?">Delete</button>
+    </p>
     <p>
       <% if @resource.id %> 
       <INPUT TYPE="HIDDEN" name="startup[id]" value="<%= @resource.id %>"></INPUT>

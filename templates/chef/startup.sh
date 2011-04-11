@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e -x
+
 apt-get install -q -y rsync git-core
 apt-get install -q -y ruby ruby-dev rubygems rake
 apt-get install -q -y build-essential
