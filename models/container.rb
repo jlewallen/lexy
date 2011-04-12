@@ -85,6 +85,10 @@ class Container
       container_path: "/data"
     }
     all << {
+      path: $lexy.join("chef"),
+      container_path: "/chef"
+    }
+    all << {
       path: $lexy.join("templates"),
       container_path: "/lexy"
     }

@@ -216,19 +216,19 @@ template "/etc/thin/gitorious" do
 end
 
 service "activemq" do
-  action :start
+  action [ :start, :enable ]
 end
 
 service "git-daemon" do
-  action :start
+  action [ :start, :enable ]
 end
 
 service "gitorious" do
-  action :start
+  action [ :start, :enable ]
 end
 
 service "poller" do
-  action :start
+  action [ :start, :enable ]
 end
 
 # EOF
