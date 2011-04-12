@@ -8,4 +8,6 @@ apt-get install -q -y build-essential
 
 gem install rdoc chef ohai --no-ri --no-rdoc --source http://gems.opscode.com --source http://gems.rubyforge.org
 
+cp lexy-chef /usr/bin
+
 # EOF

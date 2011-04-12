@@ -8,3 +8,5 @@ apt-get -q -y install nginx
 apt-get -q -y install tasksel
 
 tasksel install dns-server
+
+# EOF

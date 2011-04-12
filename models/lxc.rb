@@ -73,7 +73,6 @@ class LXC
     FileTemplate.new("sshd_config.tmpl").write(rfs.path.join("etc/ssh/sshd_config"), binding)
     FileTemplate.new("interfaces.tmpl").write(rfs.path.join("etc/network/interfaces"), binding)
     FileTemplate.new("rc.local.tmpl").write(rfs.path.join("etc/rc.local"), binding)
-    FileTemplate.new("rc.lexy.startup.tmpl").write(rfs.path.join("etc/rc.lexy.startup"), binding)
     FileTemplate.new("sources.list.tmpl").write(rfs.path.join("etc/apt/sources.list"), binding)
     FileTemplate.new("authorized_keys.tmpl").write(rfs.path.join("root/.ssh/authorized_keys"), binding)
     hostname = rfs.path.join("etc/hostname")

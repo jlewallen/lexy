@@ -1,22 +1,32 @@
-#!/bin/sh -e
+#!/bin/bash -e
 # 
 # rc.local
 # 
 # This script is executed at the end of each multiuser runlevel.
 # Make sure that the script will "exit 0" on success or any other
 # value on error.
-# 
-# In order to enable or disable this script just change the execution
-# bits.
-# 
-# By default this script does nothing.
 
-echo "Starting..." | logger -t lexy
+NAME=<%= startup.name %>
+LEXY=/lexy
+STARTUP=$LEXY/$NAME/startup.sh
+SKIP=/etc/rc.lexy.startup.skip
+TZ=America/Los_Angeles
 
-if ! [ -f /etc/rc.lexy.startup.skip ]; then
-  (apt-get update && bash /etc/rc.lexy.startup 2>&1 && touch /etc/rc.lexy.startup.skip) | logger -t lexy
+logger -t lexy "Setting TZ to $TZ"
+
+echo $TZ > /etc/timezone
+dpkg-reconfigure --frontend noninteractive tzdata 2>&1 | logger -t lexy
+
+logger -t lexy "Starting $STARTUP"
+
+if ! [ -f $SKIP ]; then
+  pushd $LEXY
+  (apt-get -y update && /bin/bash $STARTUP 2>&1 && touch $SKIP) | logger -t lexy
+  popd
+else
+  logger -t lexy "Skipping $STARTUP"
 fi
 
-echo "Ready" | logger -t lexy
+logger -t lexy "Ready"
 
 exit 0

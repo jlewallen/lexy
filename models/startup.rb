@@ -4,7 +4,6 @@ class Startup
 
   property :id,           Serial
   property :name,         String, :required => true, :length => 2..64, :unique => true
-  property :description,  String, :length => 255
 
   def self.import
     Startup.templates_directory.children.each do |e|
@@ -13,7 +12,7 @@ class Startup
       next unless startup.nil?
       next unless e.join("startup.sh").file?
       script = IO.read(e.join("startup.sh"))
-      startup = Startup.new(name: e.basename, description: "", script: script)
+      startup = Startup.new(name: e.basename, script: script)
       startup.save
     end
   end
