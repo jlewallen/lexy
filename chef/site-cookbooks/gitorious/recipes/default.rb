@@ -81,13 +81,18 @@ end
   end
 end
 
+git "/var/www/git.myserver.com/gitorious" do
+  repository "git://gitorious.org/gitorious/mainline.git"
+  reference "master"
+  action :sync
+end
+
 script "clone-gitorious" do
   interpreter "/bin/bash"
   cwd "/var/www/git.myserver.com"
   creates "/var/www/git.myserver.com/gitorious/.ready"
   code <<-EOS
   set -e -x
-  git clone git://gitorious.org/gitorious/mainline.git gitorious
   chown -R git.gitorious gitorious
   pushd gitorious
   rm public/.htaccess
@@ -124,21 +129,12 @@ end
   end
 end
 
-script "install-bundler-and-thin" do
-  interpreter "/bin/bash"
-  creates "/etc/init.d/thin"
-  code <<-EOS
-  set -e -x
-  rvm ree exec gem install bundler
-  rvm ree exec gem install unicorn
-  rvm ree exec thin install
-  EOS
-end
-
-script "bundle-gitorious-gems" do
+script "install-gems" do
   interpreter "/bin/bash"
   cwd "/var/www/git.myserver.com/gitorious"
   code <<-EOS
+  rvm ree exec gem install bundler
+  rvm ree exec gem install unicorn
   rvm ree exec bundle install
   EOS
 end
