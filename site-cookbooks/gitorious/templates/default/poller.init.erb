@@ -11,4 +11,4 @@
 # Description:       Gitorious poller    
 ### END INIT INFO    
 
-/bin/su - git -c "cd /var/www/git.myserver.com/gitorious && RAILS_ENV=production script/poller $@"
+/bin/su - git -c "cd /var/www/git.myserver.com/gitorious && RAILS_ENV=production rvm ree exec bundle exec script/poller $@"

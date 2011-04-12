@@ -33,8 +33,9 @@ default[:nginx][:worker_processes]   = cpu[:total]
 default[:nginx][:worker_connections] = 2048
 default[:nginx][:server_names_hash_bucket_size] = 64
 
-default[:nginx][:sites] = []
-
-default[:nginx][:ssl][:self_signed] = true
-default[:nginx][:ssl][:certificate] = "/etc/ssl/private/server.crt"
-default[:nginx][:ssl][:key] = "/etc/ssl/private/server.key"
+default[:nginx][:servers][:default][:name] = "default"
+default[:nginx][:servers][:default][:server_name] = "_"
+default[:nginx][:servers][:default][:sites] = []
+default[:nginx][:servers][:default][:ssl][:self_signed] = true
+default[:nginx][:servers][:default][:ssl][:certificate] = "/etc/ssl/private/server.crt"
+default[:nginx][:servers][:default][:ssl][:key] = "/etc/ssl/private/server.key"

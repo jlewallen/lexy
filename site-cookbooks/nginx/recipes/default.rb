@@ -15,32 +15,52 @@ template "nginx.conf" do
   notifies :restart, "service[nginx]", :delayed
 end
 
-template "#{node[:nginx][:dir]}/sites-available/default" do
-  source "default-site.erb"
+directory "#{node[:nginx][:dir]}/servers.d" do
   owner "root"
   group "root"
   mode 0644
-  notifies :restart, "service[nginx]", :delayed
 end
 
-node[:nginx][:sites].each do |site|
-  available = "#{node[:nginx][:dir]}/sites-available/#{site[:name]}"
-  enabled = "#{node[:nginx][:dir]}/sites-enabled/#{site[:name]}"
-  template available do
-    source "nginx.rproxy.conf.erb"
-    variables(:site => site)
+generate_self_signed_certificate = false
+
+default_server = node[:nginx][:servers][:default]
+
+node[:nginx][:servers].each do |key, server|
+  server_conf = "#{node[:nginx][:dir]}/servers.d/#{server[:name]}.conf"
+
+  server[:ssl] ||= default_server[:ssl]
+
+  directory "#{node[:nginx][:dir]}/servers.d/#{server[:name]}" do
+    owner "root"
+    group "root"
+    mode 0644
+  end
+
+  template server_conf do
+    source "server.conf.erb"
+    variables(:server => server)
     owner "root"
     group "root"
     mode 0644
     notifies :restart, "service[nginx]", :delayed
   end
 
-  link enabled do
-    to available
+  server[:sites].each do |site|
+    site_conf = "#{node[:nginx][:dir]}/servers.d/#{server[:name]}/#{site[:name]}"
+    template site_conf do
+      source "nginx.rproxy.conf.erb"
+      variables(:site => site)
+      owner "root"
+      group "root"
+      mode 0644
+      notifies :restart, "service[nginx]", :delayed
+    end
   end
+
+  generate_self_signed_certificate ||= server[:ssl][:self_signed] 
 end
 
-if node[:nginx][:ssl][:self_signed] then
+if generate_self_signed_certificate then
   script "generate-self-signed-certificate" do
     interpreter "bash"
     creates "/etc/ssl/private/server.key"

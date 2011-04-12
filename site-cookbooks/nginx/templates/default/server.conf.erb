@@ -1,0 +1,14 @@
+server {
+    listen               80;
+    server_name          <%= @server[:server_name] %>;
+    include              <%= node[:nginx][:dir] %>/servers.d/<%= @server[:name] %>/*;
+}
+
+server {
+    listen               443;
+    server_name          <%= @server[:server_name] %>;
+    ssl                  on;
+    ssl_certificate      <%= @server[:ssl][:certificate] %>;
+    ssl_certificate_key  <%= @server[:ssl][:key] %>;
+    include              <%= node[:nginx][:dir] %>/servers.d/<%= @server[:name] %>/*;
+}

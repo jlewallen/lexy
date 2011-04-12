@@ -1,13 +1,15 @@
 location <%= @site[:path] %> {
-    proxy_pass       <%= @site[:destination] %>;
-    proxy_redirect   off;
+    <% if @site[:root] %>
+    root <%= @site[:root] %>;
+    <% end %>
 
     access_log	   /var/log/nginx/<%= @site[:name] %>.access.log;
     error_log	   /var/log/nginx/<%= @site[:name] %>.error.log;
 
-    proxy_set_header   Host             $host;
-    proxy_set_header   X-Real-IP        $remote_addr;
-    proxy_set_header   X-Forwarded-For  $proxy_add_x_forwarded_for;
+    proxy_set_header   Host              $host;
+    proxy_set_header   X-Real-IP         $remote_addr;
+    proxy_set_header   X-Forwarded-For   $proxy_add_x_forwarded_for;
+    proxy_set_header   X_FORWARDED_PROTO $scheme;
     proxy_max_temp_file_size 0;
 
     client_max_body_size       10m;
@@ -21,4 +23,21 @@ location <%= @site[:path] %> {
     proxy_buffers              4 32k;
     proxy_busy_buffers_size    64k;
     proxy_temp_file_write_size 64k;
+
+    if ($request_uri ~* "\.(ico|css|js|gif|jpe?g|png)\?[0-9]+$") {
+        expires max;
+        break;
+    }
+    if (-f $request_filename) {
+        break;
+    }
+    if (-f $request_filename/index.html) {
+        rewrite (.*) $1/index.html break;
+    }
+    if (-f $request_filename.html) {
+        rewrite (.*) $1.html break;
+    }
+
+    proxy_pass       <%= @site[:destination] %>;
+    proxy_redirect   off;
 }

@@ -11,12 +11,8 @@
 end
 
 include_recipe "memcached"
-include_recipe "ruby_enterprise"
+include_recipe "rvm"
 include_recipe "mysql::server"
-
-# echo mysql-server-5.1 mysql-server/root_password password '' | debconf-set-selections
-# echo mysql-server-5.1 mysql-server/root_password_again password '' | debconf-set-selections
-# apt-get install -q -y mysql-client-5.1 mysql-server-5.1 libmysqlclient15-dev
 
 %w{ uuid uuid-dev openjdk-6-jre }.each do |p|
   package p
@@ -56,16 +52,17 @@ template "/usr/local/apache-activemq-5.4.2/conf/activemq.xml" do
   mode "644"
 end
 
-group "gitorious" do
-  members [ 'git' ]
-end
-
 group "git" do
 end
 
 user "git" do
   group "git"
   home "/home/git"
+  shell "/bin/bash"
+end
+
+group "gitorious" do
+  members [ 'git' ]
 end
 
 %w{ repositories tarballs tarball-work .ssh }.each do |d|
@@ -89,6 +86,7 @@ script "clone-gitorious" do
   cwd "/var/www/git.myserver.com"
   creates "/var/www/git.myserver.com/gitorious"
   code <<-EOS
+  set -e -x
   git clone git://gitorious.org/gitorious/mainline.git gitorious
   chown -R git.gitorious gitorious
   pushd gitorious
@@ -96,10 +94,18 @@ script "clone-gitorious" do
   mkdir -p tmp/pids
   chmod ug+x script/*
   chmod -R g+w config/ log/ public/ tmp/
-  sed -i 's@/opt/ruby-enterprise/bin/ruby@ruby@g' /var/www/git.myserver.com/gitorious/doc/templates/ubuntu/git-ultrasphinx 
-  sed -i 's@/opt/ruby-enterprise/bin/ruby@ruby@g' /var/www/git.myserver.com/gitorious/doc/templates/ubuntu/git-daemon
+
+  # i've found taht this is way easier.
+  sed -i 's@/opt/ruby-enterprise/bin/ruby@cd /var/www/git.myserver.com/gitorious/ && rvm ree exec bundle exec@g' /var/www/git.myserver.com/gitorious/doc/templates/ubuntu/git-ultrasphinx 
+  sed -i 's@/opt/ruby-enterprise/bin/ruby@cd /var/www/git.myserver.com/gitorious/ && rvm ree exec bundle exec@g' /var/www/git.myserver.com/gitorious/doc/templates/ubuntu/git-daemon
+
+  # paths and stuff...
   sed -i 's@/var/www/gitorious@/var/www/git.myserver.com/gitorious@g' /var/www/git.myserver.com/gitorious/doc/templates/ubuntu/git-ultrasphinx
   sed -i 's@/var/www/gitorious@/var/www/git.myserver.com/gitorious@g' /var/www/git.myserver.com/gitorious/doc/templates/ubuntu/git-daemon
+
+  # http://blog.rubyrockers.com/tag/gem/
+  # uninitialized constant ActiveSupport::Dependencies::Mutex
+  sed -i 's@module Rails@require "thread"; module Rails@g' /var/www/git.myserver.com/gitorious/config/boot.rb
   popd
   EOS
 end
@@ -117,13 +123,22 @@ end
   end
 end
 
+script "install-bundler-and-thin" do
+  interpreter "/bin/bash"
+  creates "/etc/init.d/thin"
+  code <<-EOS
+  set -e -x
+  rvm ree exec gem install bundler
+  rvm ree exec gem install unicorn
+  rvm ree exec thin install
+  EOS
+end
+
 script "bundle-gitorious-gems" do
   interpreter "/bin/bash"
   cwd "/var/www/git.myserver.com/gitorious"
-  user "git"
   code <<-EOS
-  rvm use ree
-  bundle install
+  rvm ree exec bundle install
   EOS
 end
 
@@ -160,25 +175,30 @@ template "/var/www/git.myserver.com/gitorious/script/setup-gitorious.rb" do
   mode "755"
 end
 
+%w{ /home/git/.bashrc /home/git/.profile }.each do |f|
+  file f do
+    content "source /usr/local/rvm/scripts/rvm\n"
+    mode "644"
+    owner "git"
+    group "git"
+  end
+end
+
 script "setup-gitorious" do
   interpreter "/bin/bash"
   cwd "/var/www/git.myserver.com"
   creates "/var/www/git.myserver.com/gitorious/setup"
   code <<-EOS
-  /bin/su - git -c "rvm use ree && cd /var/www/git.myserver.com/gitorious && env RAILS_ENV=production rake db:setup"
-  /bin/su - git -c "rvm use ree && cd /var/www/git.myserver.com/gitorious && env RAILS_ENV=production script/setup-gitorious.rb"
+  set -e -x
+  /bin/su - git -c "cd /var/www/git.myserver.com/gitorious && env RAILS_ENV=production rvm ree exec rake db:setup"
+  /bin/su - git -c "cd /var/www/git.myserver.com/gitorious && env RAILS_ENV=production rvm ree exec script/setup-gitorious.rb"
   touch /var/www/git.myserver.com/gitorious/setup
   EOS
 end
 
-script "install-thin" do
-  interpreter "/bin/bash"
-  creates "/etc/init.d/thin"
-  code <<-EOS
-  rvm use ree
-  gem install thin
-  thin install
-  EOS
+template "/etc/init.d/gitorious" do
+  source "gitorious.init.erb"
+  mode "755"
 end
 
 template "/etc/init.d/poller" do
@@ -208,4 +228,3 @@ service "poller" do
 end
 
 # EOF
-
