@@ -1,6 +1,6 @@
-[submodule "opscode-cookbooks"]
+[submodule "chef/opscode-cookbooks"]
 	path = opscode-cookbooks
 	url = git://github.com/opscode/cookbooks.git
-[submodule "rvm-cookbook"]
+[submodule "chef/rvm-cookbook"]
 	path = rvm-cookbook
 	url = git://github.com/papercavalier/rvm-cookbook.git
