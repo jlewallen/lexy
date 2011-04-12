@@ -1,0 +1,6 @@
+location / {
+    access_log  <%= node[:nginx][:log_dir] %>/access.log;
+
+    root   /var/www/nginx-default;
+    index  index.html index.htm;
+}
