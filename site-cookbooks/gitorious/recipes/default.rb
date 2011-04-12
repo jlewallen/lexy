@@ -84,7 +84,7 @@ end
 script "clone-gitorious" do
   interpreter "/bin/bash"
   cwd "/var/www/git.myserver.com"
-  creates "/var/www/git.myserver.com/gitorious"
+  creates "/var/www/git.myserver.com/gitorious/.ready"
   code <<-EOS
   set -e -x
   git clone git://gitorious.org/gitorious/mainline.git gitorious
@@ -96,8 +96,8 @@ script "clone-gitorious" do
   chmod -R g+w config/ log/ public/ tmp/
 
   # i've found taht this is way easier.
-  sed -i 's@/opt/ruby-enterprise/bin/ruby@cd /var/www/git.myserver.com/gitorious/ && rvm ree exec bundle exec@g' /var/www/git.myserver.com/gitorious/doc/templates/ubuntu/git-ultrasphinx 
-  sed -i 's@/opt/ruby-enterprise/bin/ruby@cd /var/www/git.myserver.com/gitorious/ && rvm ree exec bundle exec@g' /var/www/git.myserver.com/gitorious/doc/templates/ubuntu/git-daemon
+  sed -i 's@/opt/ruby-enterprise/bin/ruby@cd /var/www/git.myserver.com/gitorious/; rvm ree exec bundle exec@g' /var/www/git.myserver.com/gitorious/doc/templates/ubuntu/git-ultrasphinx 
+  sed -i 's@/opt/ruby-enterprise/bin/ruby@cd /var/www/git.myserver.com/gitorious/; rvm ree exec bundle exec@g' /var/www/git.myserver.com/gitorious/doc/templates/ubuntu/git-daemon
 
   # paths and stuff...
   sed -i 's@/var/www/gitorious@/var/www/git.myserver.com/gitorious@g' /var/www/git.myserver.com/gitorious/doc/templates/ubuntu/git-ultrasphinx
@@ -106,6 +106,7 @@ script "clone-gitorious" do
   # http://blog.rubyrockers.com/tag/gem/
   # uninitialized constant ActiveSupport::Dependencies::Mutex
   sed -i 's@module Rails@require "thread"; module Rails@g' /var/www/git.myserver.com/gitorious/config/boot.rb
+  touch /var/www/git.myserver.com/gitorious/.ready
   popd
   EOS
 end
@@ -206,6 +207,9 @@ template "/etc/init.d/poller" do
   mode "755"
 end
 
+directory "/etc/thin" do
+end
+
 template "/etc/thin/gitorious" do
   source "gitorious.thin.erb"
   mode "644"
@@ -219,7 +223,7 @@ service "git-daemon" do
   action :start
 end
 
-service "thin" do
+service "gitorious" do
   action :start
 end
 
