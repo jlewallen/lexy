@@ -4,18 +4,3 @@
 [submodule "rvm-cookbook"]
 	path = rvm-cookbook
 	url = git://github.com/papercavalier/rvm-cookbook.git
-[submodule "gitorious-cookbooks/gitorious"]
-	path = gitorious-cookbooks/gitorious
-	url = git://github.com/fnichol/chef-gitorious.git
-[submodule "gitorious-cookbooks/rvm"]
-	path = gitorious-cookbooks/rvm
-	url = https://github.com/fnichol/chef-rvm
-[submodule "gitorious-cookbooks/rvm_passenger"]
-	path = gitorious-cookbooks/rvm_passenger
-	url = git://github.com/fnichol/chef-rvm_passenger.git
-[submodule "gitorious-cookbooks/webapp"]
-	path = gitorious-cookbooks/webapp
-	url = git://github.com/fnichol/chef-webapp.git
-[submodule "fnichol-cookbooks"]
-	path = fnichol-cookbooks
-	url = git://github.com/fnichol/chef-cookbooks
