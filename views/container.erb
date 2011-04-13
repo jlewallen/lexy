@@ -33,7 +33,7 @@
     </ul>
     <div id="tabs-1" class="container">
 
-    <div class="span-24 last">
+    <div class="span-23 last">
     <div class="span-10">
       <form method="POST" action="/containers/<%= @container.name %>" AUTOCOMPLETE="off">
         <fieldset> 
@@ -73,9 +73,22 @@
       </form>
     </div>
 
-    <div class="span-14 last">
+    <div class="span-13 last">
+      <h4>Chef</h4>
+      <div class="span-12 last">
+        <form method="POST" action="/containers/<%= @container.name %>/chef" autocomplete="off">
+          <% @chef = @container.chef || Chef.new %>
+          <TEXTAREA NAME="chef[data]" STYLE="width: 100%;"><%= @chef.data %></TEXTAREA>
+          <INPUT NAME="chef[container_id]" TYPE="HIDDEN" VALUE="<%= @chef.container_id %>"></INPUT>
+      	  <% if @chef.id %> 
+          <INPUT NAME="chef[id]" TYPE="HIDDEN" VALUE="<%= @chef.id %>"></INPUT>
+      	  <% end %> 
+          <INPUT TYPE="SUBMIT" VALUE="Save"></INPUT>
+        </form>
+      </div>
+
       <h4>Mounts</h4>
-      <ul class="fstab-entries">
+      <ul class="span-13 last fstab-entries">
       <% @container.fstab_entries.each do |e| %>
         <li>
           Host directory <tt><%= e.path %></tt> on <tt><%= e.container_path %></tt>
@@ -84,7 +97,7 @@
       <% end %>
       <li>
         <form method="POST" action="/fstab/new" autocomplete="off">
-          Host directory <INPUT NAME="fstab[path]"></INPUT> on <INPUT NAME="fstab[container_path]"></INPUT>.
+          Host directory <INPUT NAME="fstab[path]"></INPUT> on <INPUT NAME="fstab[container_path]"></INPUT>
           <INPUT TYPE="SUBMIT" VALUE="Add"></INPUT> <INPUT NAME="fstab[container_id]" TYPE="HIDDEN" VALUE="<%= @container.id %>"></INPUT>
         </form>
       </li>

@@ -100,6 +100,20 @@ delete '/containers/:name' do
   redirect '/containers'
 end
 
+get '/containers/:name/chef.json' do
+  @container = Container.first(:name => params[:name])
+  (@container.chef || {}).to_json
+end
+
+post '/containers/:name/chef' do
+  @container = Container.first(:name => params[:name])
+  @container.chef ||= Chef.new(:container => @container)
+  @container.chef.attributes = params[:chef]
+  @container.chef.save
+  flash[:notice] = "Chef data saved."
+  redirect '/containers/' + @container.name unless request.xhr?
+end
+
 get '/containers/new' do
   @startups = Startup.all
   @key_pairs = KeyPair.all

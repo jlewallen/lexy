@@ -75,6 +75,13 @@ class LXC
     FileTemplate.new("rc.local.tmpl").write(rfs.path.join("etc/rc.local"), binding)
     FileTemplate.new("sources.list.tmpl").write(rfs.path.join("etc/apt/sources.list"), binding)
     FileTemplate.new("authorized_keys.tmpl").write(rfs.path.join("root/.ssh/authorized_keys"), binding)
+    if @container.chef
+      p "Writing lexy.chef.json..."
+      chef_json = rfs.path.join("etc/lexy.chef.json")
+      File.open(chef_json, "w") do |f|
+        f.write(@container.chef.data)
+      end
+    end
     hostname = rfs.path.join("etc/hostname")
     File.open(hostname, "w") do |f|
       f.write(@container.hostname)

@@ -13,6 +13,7 @@ class Container
   belongs_to :key_pair
   belongs_to :startup
   has n, :fstab_entries
+  has 1, :chef
 
   def key_pairs
     [ key_pair ].compact
