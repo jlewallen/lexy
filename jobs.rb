@@ -23,6 +23,13 @@ include Stalker
 
 Startup.import
 
+Container.all.each do |c|
+  next unless c.autorun
+  c.refresh
+  next if c.running?
+  Stalker.enqueue('container.start', :name => c.name)
+end
+
 job 'container.configure' do |args|
   args.symbolize_keys!
   container = Container.first(:name => args[:name])

@@ -29,6 +29,7 @@ fi
 DAEMON="stalk"
 START_COMMAND=`which bundle`
 START_ARGS="exec stalk $LEXY_HOME/jobs.rb"
+START_TIME=1
 
 set -e
 
@@ -39,7 +40,7 @@ running_pid() {
   [ -z "$pid" ] && return 1
   [ ! -d /proc/$pid ] &&  return 1
   cmd=`cat /proc/$pid/cmdline | tr "\000" " "| head -n 1 | cut -d' ' -f 3`
-  log_daemon_msg $cmd
+  # log_daemon_msg $cmd
   [ "$cmd" != "$name" ] &&  return 1
   return 0
 }
@@ -60,7 +61,7 @@ start_server() {
   fi
 
   log_daemon_msg $START_COMMAND $START_ARGS
-  start-stop-daemon --start --chdir $LEXY_HOME --pidfile $PIDFILE --make-pidfile --oknodo --background --startas $START_COMMAND -- $START_ARGS
+  start-stop-daemon --start --chdir $LEXY_HOME --pidfile $PIDFILE --oknodo --make-pidfile --oknodo --background --startas $START_COMMAND -- $START_ARGS
   errcode=$?
   return $errcode
 }
@@ -94,7 +95,7 @@ case "$1" in
             # NOTE: Some servers might die some time after they start,
             # this code will detect this issue if STARTTIME is set
             # to a reasonable value
-            [ -n "$STARTTIME" ] && sleep $STARTTIME
+            [ -n "$START_TIME" ] && sleep $START_TIME
             if  running ;  then
                 log_end_msg 0
             else

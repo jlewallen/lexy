@@ -10,6 +10,7 @@ class Container
   property :bc,         String, :required => true, :length => 5..32, :default => '192.168.0.255'
   property :mask,       String, :required => true, :length => 5..32, :default => '255.255.255.0'
   property :status,     String, :required => true, :length => 32, :default => 'UNKNOWN'
+  property :autorun,    Boolean, :required => true, :default => false
   belongs_to :key_pair
   belongs_to :startup
   has n, :fstab_entries

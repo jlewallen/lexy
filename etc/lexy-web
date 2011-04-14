@@ -56,8 +56,9 @@ start_server() {
     exit 0
   fi
 
-  log_daemon_msg $START_COMMAND
+  # log_daemon_msg $START_COMMAND
   cd $LEXY_HOME && $START_COMMAND
+  errcode=$?
   return $errcode
 }
 

@@ -54,6 +54,15 @@
           <label for="gw">Gateway</label><br/>
           <INPUT NAME="container[gw]" value="<%= @container.gw %>" class="text"></INPUT>
         </p>
+        <p>
+          <INPUT NAME="container[autorun]" TYPE="HIDDEN" value="0"></INPUT>
+          <label for="autorun">Auto-Run</label><br/>
+          <% if @container.autorun then %>
+          <INPUT NAME="container[autorun]" TYPE="CHECKBOX" value="1" class="checkbox" CHECKED="1"></INPUT>
+          <% else %>
+          <INPUT NAME="container[autorun]" TYPE="CHECKBOX" value="1" class="checkbox"></INPUT>
+          <% end %>
+        </p>
         </fieldset>
         <fieldset>
         <legend>Setup</legend>
