@@ -59,7 +59,7 @@ class LXC
     container.mountings.each do |e|
       path = Pathname.new(rootfs_path.to_s + e.container_path)
       path.mkpath
-      e.path.mkpath
+      Pathname.new(e.path).mkpath
       p [ e.path.to_s, path.to_s ]
     end
     rfs.path.join("home").mkpath

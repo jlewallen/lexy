@@ -1,0 +1,128 @@
+#!/bin/bash
+#
+### BEGIN INIT INFO
+# Provides:          lexy-jobs
+# Required-Start:    $remote_fs $network $local_fs
+# Required-Stop:     $remote_fs $network $local_fs
+# Should-Start:      $named
+# Should-Stop:
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: awesome lxc container manager
+### END INIT INFO
+
+NAME=lexy-jobs
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+DESC="awesome lxc container manager"
+PIDFILE=/var/run/$NAME.pid
+LOGFILE=/var/log/lexy-jobs.log
+
+. /lib/lsb/init-functions
+
+source /usr/local/rvm/scripts/rvm
+
+# Include defaults if available
+if [ -f /etc/default/lexy ] ; then
+    . /etc/default/lexy
+fi
+
+DAEMON="stalk"
+START_COMMAND=`which bundle`
+START_ARGS="exec stalk $LEXY_HOME/jobs.rb"
+
+set -e
+
+running_pid() {
+  # Check if a given process pid's cmdline matches a given name
+  pid=$1
+  name=$2
+  [ -z "$pid" ] && return 1
+  [ ! -d /proc/$pid ] &&  return 1
+  cmd=`cat /proc/$pid/cmdline | tr "\000" " "| head -n 1 | cut -d' ' -f 3`
+  log_daemon_msg $cmd
+  [ "$cmd" != "$name" ] &&  return 1
+  return 0
+}
+
+running() {
+  [ ! -f "$PIDFILE" ] && return 1
+  pid=`cat $PIDFILE`
+  running_pid $pid "$LEXY_HOME/jobs.rb" || return 1
+  return 0
+}
+
+start_server() {
+  # Start the process using the wrapper
+  if [ "x$START" != "xyes" -a "x$START" != "xtrue"  ]; then
+    echo ""
+    echo "$NAME not configured to start, please edit /etc/default/lexy to enable"
+    exit 0
+  fi
+
+  log_daemon_msg $START_COMMAND $START_ARGS
+  start-stop-daemon --start --chdir $LEXY_HOME --pidfile $PIDFILE --make-pidfile --oknodo --background --startas $START_COMMAND -- $START_ARGS
+  errcode=$?
+  return $errcode
+}
+
+stop_server() {
+  if [ -z "$DAEMONUSER" ] ; then
+    killproc -p $PIDFILE $DAEMON
+    errcode=$?
+  else
+    killproc -p $PIDFILE $DAEMON
+    errcode=$?
+  fi
+  rm -f $PIDFILE
+  return $errcode
+}
+
+reload_server() {
+  return 1
+}
+
+
+case "$1" in
+  start)
+        log_daemon_msg "Starting $DESC $NAME"
+        if running ;  then
+            log_progress_msg "apparently already running"
+            log_end_msg 0
+            exit 0
+        fi
+        if start_server ; then
+            # NOTE: Some servers might die some time after they start,
+            # this code will detect this issue if STARTTIME is set
+            # to a reasonable value
+            [ -n "$STARTTIME" ] && sleep $STARTTIME
+            if  running ;  then
+                log_end_msg 0
+            else
+                log_end_msg 1
+            fi
+        else
+            log_end_msg 1
+        fi
+        ;;
+  stop)
+        log_daemon_msg "Stopping $DESC" "$NAME"
+        if running ; then
+            errcode=0
+            stop_server || errcode=$?
+            log_end_msg $errcode
+        else
+            log_progress_msg "apparently not running"
+            log_end_msg 0
+            exit 0
+        fi
+        ;;
+  restart)
+        ;;
+  *)
+        N=/etc/init.d/$NAME
+        echo "Usage: $N {start|stop|restart}" >&2
+        exit 1
+        ;;
+esac
+
+exit 0

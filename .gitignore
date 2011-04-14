@@ -4,3 +4,4 @@ ubuntu-10.10.tar.gz
 ubuntu-10.10
 data
 config/*.json
+log

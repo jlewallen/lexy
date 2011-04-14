@@ -14,7 +14,7 @@ require "pathname"
 require 'tempfile'
 require "stalker"
 
-DataMapper::Logger.new(STDOUT, :debug)
+DataMapper::Logger.new('/var/log/lexy-jobs.log', :debug)
 DataMapper.setup(:default, "sqlite://#{Dir.pwd}/my.db")
 
 require_relative "models/lexy"
