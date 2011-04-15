@@ -8,7 +8,8 @@
 
 NAME=<%= startup.name %>
 LEXY=/lexy
-STARTUP=$LEXY/$NAME/startup.sh
+STARTUP_HOME=$LEXY/$NAME
+STARTUP=$STARTUP_HOME/startup.sh
 SKIP=/etc/rc.lexy.startup.skip
 TZ=America/Los_Angeles
 
@@ -20,7 +21,7 @@ dpkg-reconfigure --frontend noninteractive tzdata 2>&1 | logger -t lexy
 logger -t lexy "Starting $STARTUP"
 
 if ! [ -f $SKIP ]; then
-  pushd $LEXY
+  pushd $STARTUP_HOME
   (apt-get -y update && /bin/bash $STARTUP 2>&1 && touch $SKIP) | logger -t lexy
   popd
 else
