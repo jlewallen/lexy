@@ -4,15 +4,18 @@
       <div class="status <%= @container.status.downcase %>"><span><%= @container.status %><span></div>
     </div>
 
-    <div class="span-8">
+    <div class="span-6">
       <div class="name"><%= @container.name %></div>
       <div class="path"><%= @container.path %></div>
     </div>
 
-    <div class="span-12 last" style="text-align: right;">
+    <div class="span-14 last" style="text-align: right;">
       <button data-href="/containers/<%= @container.name %>/log" data-method="GET">Log</button>
       <% if @container.running? %>
-      <button data-href="/containers/<%= @container.name %>/run-startup">Run Startup</button>
+      <button data-href="/containers/<%= @container.name %>/startup/run">Run Startup</button>
+      <% if @container.chef %>
+      <button data-href="/containers/<%= @container.name %>/chef/run">Run Chef</button>
+      <% end %>
       <button data-href="/containers/<%= @container.name %>/stop" data-confirm="Are you sure?">Stop</button>
       <button data-href="/containers/<%= @container.name %>/restart" data-confirm="Are you sure?">Restart</button>
       <button data-href="/containers/<%= @container.name %>/recycle" data-confirm="This will delete the container! Are you sure?">Recycle</button>
@@ -93,7 +96,7 @@
       <div class="span-22 last">
         <form method="POST" action="/containers/<%= @container.name %>/chef" autocomplete="off">
           <% @chef = @container.chef || Chef.new %>
-          <TEXTAREA NAME="chef[data]" STYLE="width: 900px; height: 500px;"><%= @chef.data %></TEXTAREA>
+          <TEXTAREA NAME="chef[data]" STYLE="width: 900px; height: 500px; font-family:Consolas,Monaco,Lucida Console,Liberation Mono,DejaVu Sans Mono,Bitstream Vera Sans Mono,Courier New, monospace;"><%= @chef.to_pretty_json %></TEXTAREA>
           <INPUT NAME="chef[container_id]" TYPE="HIDDEN" VALUE="<%= @chef.container_id %>"></INPUT>
          <% if @chef.id %> 
           <INPUT NAME="chef[id]" TYPE="HIDDEN" VALUE="<%= @chef.id %>"></INPUT>

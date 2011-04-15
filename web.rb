@@ -50,8 +50,13 @@ post '/containers/:name' do
   redirect '/containers/' + params[:name]
 end
 
-post '/containers/:name/run-startup' do
-  Stalker.enqueue('container.ssh', :name => params[:name], :command => "/usr/bin/nohup /bin/bash /etc/rc.lexy.startup < /dev/null 2>&1 | logger -t lexy &")
+post '/containers/:name/startup/run' do
+  Stalker.enqueue('container.ssh', :name => params[:name], :command => "/usr/bin/nohup /bin/bash /etc/rc.local --force < /dev/null 2>&1 | logger -t lexy &")
+  redirect '/containers/' + params[:name] unless request.xhr?
+end
+
+post '/containers/:name/chef/run' do
+  Stalker.enqueue('container.ssh', :name => params[:name], :command => "/usr/bin/nohup /usr/bin/lexy-chef cook:lexy < /dev/null 2>&1 | logger -t lexy &")
   redirect '/containers/' + params[:name] unless request.xhr?
 end
 

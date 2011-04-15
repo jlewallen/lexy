@@ -6,6 +6,10 @@ class Chef
   belongs_to :container
 
   def to_json
-    data.to_json
+    to_pretty_json
+  end
+
+  def to_pretty_json
+    JSON.pretty_generate(JSON.parse(data || '{}'))
   end
 end

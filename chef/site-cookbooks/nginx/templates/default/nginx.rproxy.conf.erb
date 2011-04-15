@@ -4,7 +4,7 @@ location <%= @site[:path] %> {
     <% end %>
 
     access_log	   /var/log/nginx/<%= @site[:name] %>.access.log;
-    error_log	   /var/log/nginx/<%= @site[:name] %>.error.log;
+    error_log	     /var/log/nginx/<%= @site[:name] %>.error.log;
 
     proxy_set_header   Host              $host;
     proxy_set_header   X-Real-IP         $remote_addr;

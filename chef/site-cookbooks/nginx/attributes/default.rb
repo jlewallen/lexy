@@ -34,7 +34,7 @@ default[:nginx][:worker_connections] = 2048
 default[:nginx][:server_names_hash_bucket_size] = 64
 
 default[:nginx][:servers][:default][:name] = "default"
-default[:nginx][:servers][:default][:server_name] = "_"
+default[:nginx][:servers][:default][:server_name] = nil
 default[:nginx][:servers][:default][:sites] = []
 default[:nginx][:servers][:default][:ssl][:self_signed] = true
 default[:nginx][:servers][:default][:ssl][:certificate] = "/etc/ssl/private/server.crt"

@@ -6,12 +6,23 @@
 # Make sure that the script will "exit 0" on success or any other
 # value on error.
 
+set -e -x
+
 NAME=<%= startup.name %>
 LEXY=/lexy
 STARTUP_HOME=$LEXY/$NAME
 STARTUP=$STARTUP_HOME/startup.sh
 SKIP=/etc/rc.lexy.startup.skip
 TZ=America/Los_Angeles
+
+while [ "$1" != "" ]; do
+  case $1 in
+    --force )
+      rm -rf $SKIP
+      ;;
+  esac
+  shift
+done
 
 logger -t lexy "Setting TZ to $TZ"
 

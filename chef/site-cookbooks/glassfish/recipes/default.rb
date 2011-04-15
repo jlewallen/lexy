@@ -14,7 +14,7 @@ user node[:glassfish][:user] do
   shell "/bin/sh"
 end
 
-remote_file "/tmp/glassfish.zip" do
+remote_file "/opt/glassfish.zip" do
   owner node[:glassfish][:user]
   source node[:glassfish][:url]
   mode "0644"
@@ -29,17 +29,11 @@ directory node[:glassfish][:home] do
   recursive true
 end
 
-execute "install-glassfish" do
-  command "cd #{node[:glassfish][:home]} && unzip /tmp/glassfish.zip && mv glassfish3/* glassfish3/.org* . && rmdir glassfish3"
-  creates ::File.join(node[:glassfish][:home], "glassfish", "bin", "asadmin")
-  user node[:glassfish][:user]
-  action :run
-end
+asadmin = File.join(node[:glassfish][:home], "/glassfish/bin/asadmin")
 
-secured_marker = ::File.join(node[:glassfish][:home], "glassfish", "bin", "asadmin.secured")
-execute "install-secure-admin" do
-  command "#{node[:glassfish][:home]}/glassfish/bin/asadmin enable-secure-admin && touch #{secured_marker}"
-  creates secured_marker 
+execute "install-glassfish" do
+  command "cd #{node[:glassfish][:home]} && unzip /opt/glassfish.zip && mv glassfish3/* glassfish3/.org* . && rmdir glassfish3 && rm -rf glassfish3/domains/domain1"
+  creates ::File.join(node[:glassfish][:home], "glassfish", "bin", "asadmin")
   user node[:glassfish][:user]
   action :run
 end
@@ -47,6 +41,73 @@ end
 template "/etc/init.d/glassfish" do
   source "glassfish-init.d-script.erb"
   mode "0755"
+end
+
+node[:glassfish][:domains].each do |domain|
+  # Using port 7048 for Admin.
+  # Using port 7080 for HTTP Instance.
+  # Using port 7076 for JMS.
+  # Using port 7037 for IIOP.
+  # Using port 7081 for HTTP_SSL.
+  # Using port 7038 for IIOP_SSL.
+  # Using port 7039 for IIOP_MUTUALAUTH.
+  # Using port 7086 for JMX_ADMIN.
+  # Using port 7066 for OSGI_SHELL.
+  # Using port 7009 for JAVA_DEBUGGER.
+
+  directory = File.join(node[:glassfish][:home], "/glassfish/domains/", domain[:name])
+  secured_marker = File.join(directory, "asadmin.secured")
+  admin_port = domain[:base_port] + 48
+  https_port = domain[:base_port] + 81
+  httpd_port = domain[:base_port] + 80
+  jms_port = domain[:base_port] + 76
+  name = domain[:name]
+
+  execute "create-domain" do
+    command "#{asadmin} create-domain --user=asadmin --nopassword --portbase=#{domain[:base_port]} #{name}"
+    creates directory 
+    user node[:glassfish][:user]
+    action :run
+  end
+
+  script "install-secure-admin" do
+    interpreter "/bin/bash"
+    code <<-EOS
+      set -e -x
+      #{asadmin} restart-domain #{name}
+      #{asadmin} --port #{admin_port} enable-secure-admin
+      #{asadmin} restart-domain #{name}
+      touch #{secured_marker}
+    EOS
+    creates secured_marker 
+    user node[:glassfish][:user]
+    action :run
+  end
+
+  domain[:applications].each do |application|
+    war_name = File.basename(application[:war])
+    name = File.basename(application[:war], File.extname(war_name))
+    local_war = File.join("/opt", war_name)
+    application_directory = File.join(directory, "applications", name)
+
+    remote_file local_war do
+      owner node[:glassfish][:user]
+      source application[:war]
+      mode "0644"
+      action :create_if_missing
+    end
+
+    script "deploy-#{name}" do
+      interpreter "/bin/bash"
+        code <<-EOS
+        set -e -x
+        #{asadmin} --port #{admin_port} deploy --force --contextroot #{application[:path]} #{local_war}
+      EOS
+      creates application_directory 
+      user node[:glassfish][:user]
+      action :run
+    end
+  end
 end
 
 service "glassfish" do

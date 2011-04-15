@@ -15,9 +15,13 @@ namespace :cook do
   Pathname.new(dir).join("config").children.each do |e|
     next unless e.basename.to_s =~ /dna-(\w+).json/
     name = $1
-    task name do
+    task name => :default do
       sh "chef-solo -c #{dir}/config/solo.rb -j #{e}"
     end
+  end
+
+  task :lexy => :default do
+    sh "chef-solo -c #{dir}/config/solo.rb -j /etc/lexy.chef.json"
   end
 
   task :custom => :default do
