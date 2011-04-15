@@ -123,11 +123,13 @@ end
 
 get '/containers/:name/log' do
   @container = Container.first(:name => params[:name])
+  raise Sinatra::NotFound unless @container
   erb :log, :layout => !request.xhr?
 end
 
 get '/containers/:name/processes' do
   @container = Container.first(:name => params[:name])
+  raise Sinatra::NotFound unless @container
   erb :processes, :layout => !request.xhr?
 end
 
@@ -135,6 +137,7 @@ get '/containers/:name' do
   @startups = Startup.all
   @key_pairs = KeyPair.all
   @container = Container.first(:name => params[:name])
+  raise Sinatra::NotFound unless @container
   erb :container
 end
 

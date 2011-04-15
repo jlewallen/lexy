@@ -14,10 +14,12 @@ require "pathname"
 require 'tempfile'
 require "stalker"
 
+STDERR.sync = STDOUT.sync = true
 DataMapper::Logger.new('/var/log/lexy-jobs.log', :debug)
 DataMapper.setup(:default, "sqlite://#{Dir.pwd}/my.db")
 
 require_relative "models/lexy"
+require_relative "monitor"
 
 include Stalker
 
@@ -94,6 +96,17 @@ job 'containers.refresh' do |args|
   Container.all.each do |c|
     c.refresh
   end
+end
+
+if true
+  thread = Thread.new do
+    begin
+      StatusMonitor.new.run
+    rescue Exception => e
+      p e
+    end
+  end
+  thread.run
 end
 
 # EOF
