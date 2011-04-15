@@ -29,16 +29,6 @@ helpers do
   end
 end
 
-$previous_refresh = nil
-before do
-  unless request.path_info =~ /\.\w+$/
-    if $previous_refresh == nil || (Time.now.to_i - $previous_refresh) > 5 then
-      Stalker.enqueue('containers.refresh')
-      $previous_refresh = Time.now.to_i
-    end
-  end
-end
-
 get '/css/application.css' do
   less :css
 end
