@@ -63,6 +63,12 @@ instances = {
     "mysql" => {
       "server_root_password" => "asdfasdf"
     }
+  },
+
+  "nexus" => {
+    "recipes" => [
+      "java", "nexus"
+    ]
   }
 }
 
