@@ -147,8 +147,11 @@
 
       var running = <%= @container.running? ? 'true' : 'false' %>;
       function refresh() {
-        $('.log').load("/containers/<%= @container.name %>/log");
         $('.processes').load("/containers/<%= @container.name %>/processes");
+        $('.log').load("/containers/<%= @container.name %>/log", function() {
+          var log = $('.log');
+          log.attr({ scrollTop: log.attr("scrollHeight") });
+        });
       }
       if (running) {
         refresh();
