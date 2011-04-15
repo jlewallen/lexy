@@ -28,13 +28,14 @@
   <div id="tabs" class="clear">
     <ul>
       <li><a href="#tabs-1">Configuration</a></li>
-      <li><a href="#tabs-2">Processes</a></li>
-      <li><a href="#tabs-3">Log</a></li>
+      <li><a href="#tabs-2">Chef</a></li>
+      <li><a href="#tabs-3">Resources</a></li>
+      <li><a href="#tabs-4">Processes</a></li>
+      <li><a href="#tabs-5">Log</a></li>
     </ul>
-    <div id="tabs-1" class="container">
 
-    <div class="span-23 last">
-    <div class="span-10">
+    <div id="tabs-1" class="container">
+      <div class="span-10 last">
       <form method="POST" action="/containers/<%= @container.name %>" AUTOCOMPLETE="off">
         <fieldset> 
         <legend>Networking</legend>
@@ -54,17 +55,9 @@
           <label for="gw">Gateway</label><br/>
           <INPUT NAME="container[gw]" value="<%= @container.gw %>" class="text"></INPUT>
         </p>
-        <p>
-          <INPUT NAME="container[autorun]" TYPE="HIDDEN" value="0"></INPUT>
-          <label for="autorun">Auto-Run</label><br/>
-          <% if @container.autorun then %>
-          <INPUT NAME="container[autorun]" TYPE="CHECKBOX" value="1" class="checkbox" CHECKED="1"></INPUT>
-          <% else %>
-          <INPUT NAME="container[autorun]" TYPE="CHECKBOX" value="1" class="checkbox"></INPUT>
-          <% end %>
-        </p>
         </fieldset>
-        <fieldset>
+        
+        <fieldset class="span-5">
         <legend>Setup</legend>
         <p>
           <label for="key_pair">Key Pair</label><br/>
@@ -74,58 +67,83 @@
           <label for="startup">Startup</label><br/>
           <%= selection("container[startup_id]", @startups, @container.startup) %>
         </p>
+        </fieldset>
+
+        <fieldset class="span-5 last">
+        <legend>&nbsp;</legend>
+        <p>
+          <INPUT NAME="container[autorun]" TYPE="HIDDEN" value="0"></INPUT>
+          <label for="autorun">Auto-Run</label><br/>
+          <% if @container.autorun then %>
+          <INPUT NAME="container[autorun]" TYPE="CHECKBOX" value="1" class="checkbox" CHECKED="1"></INPUT>
+          <% else %>
+          <INPUT NAME="container[autorun]" TYPE="CHECKBOX" value="1" class="checkbox"></INPUT>
+          <% end %>
+        </p>
         <p>
           <INPUT TYPE="HIDDEN" NAME="container[id]" value="<%= @container.id %>"></INPUT>
-          <INPUT TYPE="SUBMIT" value="Save"></INPUT>
+          <button class="post">Save</button>
         </p>
         </fieldset>
       </form>
+      </div>
     </div>
-
-    <div class="span-13 last">
-      <h4>Chef</h4>
-      <div class="span-12 last">
+    
+    <div id="tabs-2" class="container">
+      <div class="span-22 last">
         <form method="POST" action="/containers/<%= @container.name %>/chef" autocomplete="off">
           <% @chef = @container.chef || Chef.new %>
-          <TEXTAREA NAME="chef[data]" STYLE="width: 100%;"><%= @chef.data %></TEXTAREA>
+          <TEXTAREA NAME="chef[data]" STYLE="width: 900px; height: 500px;"><%= @chef.data %></TEXTAREA>
           <INPUT NAME="chef[container_id]" TYPE="HIDDEN" VALUE="<%= @chef.container_id %>"></INPUT>
-      	  <% if @chef.id %> 
+         <% if @chef.id %> 
           <INPUT NAME="chef[id]" TYPE="HIDDEN" VALUE="<%= @chef.id %>"></INPUT>
-      	  <% end %> 
-          <INPUT TYPE="SUBMIT" VALUE="Save"></INPUT>
+    	    <% end %> 
+          <button class="post">Save</button>
         </form>
       </div>
-
-      <h4>Mounts</h4>
-      <ul class="span-13 last fstab-entries">
-      <% @container.fstab_entries.each do |e| %>
-        <li>
-          Host directory <tt><%= e.path %></tt> on <tt><%= e.container_path %></tt>
-          <button data-href="/fstab/<%= e.id %>" data-method="delete" data-confirm="Are you sure?" data-sync="yes">Delete</button>
-        </li>
-      <% end %>
-      <li>
+    </div>
+    
+    <div id="tabs-3">
+      <div class="container">
+        <h4>Mounts</h4>
         <form method="POST" action="/fstab/new" autocomplete="off">
-          Host directory <INPUT NAME="fstab[path]"></INPUT> on <INPUT NAME="fstab[container_path]"></INPUT>
-          <INPUT TYPE="SUBMIT" VALUE="Add"></INPUT> <INPUT NAME="fstab[container_id]" TYPE="HIDDEN" VALUE="<%= @container.id %>"></INPUT>
+        <table class="span-13">
+          <% @container.fstab_entries.each do |e| %>
+          <tr>
+            <td><%= e.path %></td>
+            <td><%= @container.name %><%= e.container_path %></td>
+            <td><button data-href="/fstab/<%= e.id %>" data-method="delete" data-confirm="Are you sure?" data-sync="yes">Delete</button></td>
+          </tr>
+          <% end %>
+          <tr>
+            <td> <INPUT NAME="fstab[path]" VALUE="/"></INPUT> </td>
+            <td> <%= @container.name %><INPUT NAME="fstab[container_path]" VALUE="/"></INPUT> </td>
+            <td>
+              <INPUT NAME="fstab[container_id]" TYPE="HIDDEN" VALUE="<%= @container.id %>"></INPUT>
+              <button class="post">Add</button>
+            </td>
+          </tr>
+        </table>
         </form>
-      </li>
-      </ul>
+      </div>
     </div>
-    </div>
-
-    </div>
-    <div id="tabs-2">
+    
+    <div id="tabs-4">
       <div class="processes" style="width: 100%; overflow: scroll; font-size: 11px;"></div>
     </div>
-    <div id="tabs-3">
+
+    <div id="tabs-5">
       <div class="log" style="width: 100%; max-height: 600px; overflow: scroll; font-size: 11px;"></div>
     </div>
   </div>
 
   <script type="text/javascript">
     $(function() {
-      $('#tabs').tabs({});
+      $('#tabs').tabs({ cookie: { expires: 30 } });
+
+      $('button.post').click(function() {
+        $(this).parents('form').submit();
+      });
 
       var running = <%= @container.running? ? 'true' : 'false' %>;
       function refresh() {
