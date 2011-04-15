@@ -1,6 +1,7 @@
 #
 #
 
+require 'pathname'
 require 'rubygems'
 require 'json'
 
@@ -11,16 +12,12 @@ end
 namespace :cook do
   dir = File.dirname(__FILE__)
 
-  task :test => :default do
-    sh "chef-solo -c #{dir}/config/solo.rb -j #{dir}/config/dna-test.json"
-  end
-
-  task :gitorious => :default do
-    sh "chef-solo -c #{dir}/config/solo.rb -j #{dir}/config/dna-gitorious.json"
-  end
-
-  task :nexus => :default do
-    sh "chef-solo -c #{dir}/config/solo.rb -j #{dir}/config/dna-nexus.json"
+  Pathname.new(dir).join("config").children.each do |e|
+    next unless e.basename.to_s =~ /dna-(\w+).json/
+    name = $1
+    task name do
+      sh "chef-solo -c #{dir}/config/solo.rb -j #{e}"
+    end
   end
 
   task :custom => :default do
