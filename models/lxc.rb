@@ -54,7 +54,7 @@ class LXC
     path.mkpath
     rootfs_path = path.join("rootfs")
     rfs = RootFS.new(rootfs_path)
-    container.update_status("ROOTFS")
+    # container.update_status("ROOTFS")
     rfs.configure
     container.mountings.each do |e|
       path = Pathname.new(rootfs_path.to_s + e.container_path)
@@ -65,7 +65,7 @@ class LXC
     rfs.path.join("home").mkpath
     rfs.path.join("tmp").chmod(01777)
     binding = @container.get_binding
-    container.update_status("TEMPLATES")
+    # container.update_status("TEMPLATES")
     install_apt_proxy(rfs)
     FileTemplate.new("config.tmpl").write(path.join("config"), binding)
     FileTemplate.new("fstab.tmpl").write(path.join("fstab"), binding)
@@ -87,7 +87,7 @@ class LXC
     File.open(hostname, "w") do |f|
       f.write(@container.hostname)
     end
-    container.update_status("SSH-KEYGEN")
+    # container.update_status("SSH-KEYGEN")
     key = rfs.path.join("etc/ssh/ssh_host_dsa_key")
     exec("ssh-keygen -t dsa -N '' -f #{key}") unless key.file?
     key = rfs.path.join("etc/ssh/ssh_host_rsa_key")

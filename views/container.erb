@@ -4,12 +4,12 @@
       <div class="status <%= @container.status.downcase %>"><span><%= @container.status %><span></div>
     </div>
 
-    <div class="span-6">
+    <div class="span-4">
       <div class="name"><%= @container.name %></div>
       <div class="path"><%= @container.path %></div>
     </div>
 
-    <div class="span-14 last" style="text-align: right;">
+    <div class="span-16 last" style="text-align: right;">
       <button data-href="/containers/<%= @container.name %>/log" data-method="GET">Log</button>
       <% if @container.running? %>
       <button data-href="/containers/<%= @container.name %>/startup/run">Run Startup</button>
@@ -21,8 +21,8 @@
       <button data-href="/containers/<%= @container.name %>/recycle" data-confirm="This will delete the container! Are you sure?">Recycle</button>
       <% else %>
       <button data-href="/containers/<%= @container.name %>/start">Start</button>
-      <button data-href="/containers/<%= @container.name %>/clean" data-method="POST" data-confirm="Are you sure?">Reset</button>
-      <button data-href="/containers/<%= @container.name %>" data-method="delete" data-confirm="Are you sure?" data-sync="yes">Delete</button>
+      <button data-href="/containers/<%= @container.name %>/clean" data-confirm="Are you sure?">Reset</button>
+      <button data-href="/containers/<%= @container.name %>" data-method="delete" data-confirm="Are you sure?">Delete</button>
       <% end %>
       <button data-href="/containers/<%= @container.name %>/configure" data-method="POST">Configure</button>
     </div>

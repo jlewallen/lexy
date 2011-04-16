@@ -17,7 +17,13 @@
   </head>
   <body>
     <div id="header" class="container">
-      <h1 class="span-8">Lexy</h1>
+      <div style="min-height: 50px;" class="span-24 last">
+        <h1 class="span-8" style="margin: 0em;">Lexy</h1>
+        <div class="span-16 last">
+          <% if flash[:notice] %><div class="notice"><%= flash[:notice] %></div><% end %>
+          <% if flash[:error] %><div class="error"><%= flash[:error] %></div><% end %>
+        </div>
+      </div>
       <div class="navigation">
         <ul class="top">
           <li><a href="/containers">Containers</a></li>
@@ -32,8 +38,6 @@
     </div>
 
     <div id="view" class="container">
-      <% if flash[:notice] %><p class="notice"><%= flash[:notice] %></p><% end %>
-      <% if flash[:error] %><p class="error"><%= flash[:error] %></p><% end %>
       <%= yield %>
     </div>
   </body>
