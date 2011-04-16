@@ -46,6 +46,11 @@ link "/etc/init.d/nexus" do
   to ::File.join(node[:nexus][:home], node[:nexus][:directory], "bin/jsw/linux-x86-32/nexus")
 end
 
+template File.join(node[:nexus][:home], node[:nexus][:directory], "conf/plexus.properties") do
+  source "plexus.properties.erb"
+  notifies :restart, "service[nexus]", :delayed
+end
+
 service "nexus" do
   supports :start => true, :restart => true, :stop => true
   action [ :enable, :start ]
