@@ -42,6 +42,14 @@ get '/containers' do
   erb :containers
 end
 
+post '/containers/configure' do
+  Container.all.each do |c|
+    Stalker.enqueue('container.configure', :name => c.name)
+  end
+  flash[:notice] = "All containers configured."
+  redirect '/containers'
+end
+
 post '/containers/:name' do
   c = Container.get(params[:container][:id])
   c.attributes = params[:container]
@@ -52,46 +60,55 @@ end
 
 post '/containers/:name/startup/run' do
   Stalker.enqueue('container.ssh', :name => params[:name], :command => "/usr/bin/nohup /bin/bash /etc/rc.local --force < /dev/null 2>&1 | logger -t lexy &")
+  flash[:notice] = "Ran startup for " + params[:name]
   redirect '/containers/' + params[:name] unless request.xhr?
 end
 
 post '/containers/:name/chef/run' do
   Stalker.enqueue('container.ssh', :name => params[:name], :command => "/usr/bin/nohup /usr/bin/lexy-chef cook:lexy < /dev/null 2>&1 | logger -t lexy &")
+  flash[:notice] = "Ran chef for " + params[:name]
   redirect '/containers/' + params[:name] unless request.xhr?
 end
 
 post '/containers/:name/configure' do
   Stalker.enqueue('container.configure', :name => params[:name])
+  flash[:notice] = "Configured " + params[:name]
   redirect '/containers/' + params[:name] unless request.xhr?
 end
 
 post '/containers/:name/clean' do
   Stalker.enqueue('container.clean', :name => params[:name])
+  flash[:notice] = "Cleaned " + params[:name]
   redirect '/containers/' + params[:name] unless request.xhr?
 end
 
 post '/containers/:name/restart' do
   Stalker.enqueue('container.restart', :name => params[:name])
+  flash[:notice] = "Restarting " + params[:name]
   redirect '/containers/' + params[:name] unless request.xhr?
 end
 
 post '/containers/:name/start' do
   Stalker.enqueue('container.start', :name => params[:name])
+  flash[:notice] = "Starting " + params[:name]
   redirect '/containers/' + params[:name] unless request.xhr?
 end
 
 post '/containers/:name/recycle' do
   Stalker.enqueue('container.recycle', :name => params[:name])
+  flash[:notice] = "Recyling " + params[:name]
   redirect '/containers/' + params[:name] unless request.xhr?
 end
 
 post '/containers/:name/stop' do
   Stalker.enqueue('container.stop', :name => params[:name])
+  flash[:notice] = "Stopping " + params[:name]
   redirect '/containers/' + params[:name] unless request.xhr?
 end
 
 delete '/containers/:name' do
   Stalker.enqueue('container.destroy', :name => params[:name])
+  flash[:notice] = "Deleted " + params[:name]
   redirect '/containers'
 end
 
