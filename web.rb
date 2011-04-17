@@ -117,6 +117,13 @@ get '/containers/:name/chef.json' do
   (@container.chef || {}).to_json
 end
 
+post '/containers/:name/status/:status' do
+  @container = Container.first(:name => params[:name])
+  @container.status = params[:status]
+  @container.save
+  redirect '/containers/' + @container.name unless request.xhr?
+end
+
 post '/containers/:name/chef' do
   @container = Container.first(:name => params[:name])
   @container.chef ||= Chef.new(:container => @container)

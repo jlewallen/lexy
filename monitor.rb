@@ -1,5 +1,6 @@
 #!/usr/bin/env ruby
 
+require 'net/https'
 require 'open3'
 require 'pty'
 
@@ -45,12 +46,9 @@ class StatusMonitor
             i.each do |line|
               if line =~ /'(.+)' changed state to \[(.+)\]/ then
                 name = $1
-                state = $2
-                p [name, state]
-                if container = Container.first(:name => name) then
-                  container.status = $2
-                  container.save
-                end
+                status = $2
+                p [name, status]
+                update(name, status)
               end
             end
           rescue Errno::EIO
@@ -59,6 +57,17 @@ class StatusMonitor
       rescue PTY::ChildExited
         @pid = nil
       end
+    end
+  end
+
+  def update(name, status)
+    uri = URI.parse("http://127.0.0.1:3000/containers/#{name}/status/#{status}")
+    p uri
+    http = Net::HTTP.new(uri.host, uri.port)
+    # http.use_ssl = true
+    # http.verify_mode = OpenSSL::SSL::VERIFY_NONE
+    http.start do
+      p http.post(uri.path, uri.query)
     end
   end
 end
