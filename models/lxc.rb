@@ -73,7 +73,7 @@ class LXC
     FileTemplate.new("sources.list.tmpl").write(rfs.path.join("etc/apt/sources.list"), binding)
     FileTemplate.new("authorized_keys.tmpl").write(rfs.path.join("root/.ssh/authorized_keys"), binding)
     FileTemplate.new("bashrc.tmpl").write(rfs.path.join("root/.bashrc"), binding)
-    FileUtils::Verbose::ln_sf(File.join("../lexy", container.startup.name, "startup.sh"), rfs.path.join("etc/rc.lexy.startup"))
+    FileUtils::Verbose::ln_sf(File.join("../lexy/templates", container.startup.name, "startup.sh"), rfs.path.join("etc/rc.lexy.startup"))
     if @container.chef
       p "Writing lexy.chef.json..."
       chef_json = rfs.path.join("etc/lexy.chef.json")

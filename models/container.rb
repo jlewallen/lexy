@@ -87,11 +87,7 @@ class Container
       container_path: "/data"
     }
     all << {
-      path: $lexy.join("chef"),
-      container_path: "/chef"
-    }
-    all << {
-      path: $lexy.join("templates"),
+      path: $lexy,
       container_path: "/lexy"
     }
     all.map { |e| OpenStruct.new(e) }
