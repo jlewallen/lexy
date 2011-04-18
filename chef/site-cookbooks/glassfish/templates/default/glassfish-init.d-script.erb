@@ -5,24 +5,22 @@
 # chkconfig: 3 80 05
 # description:      Startup script for domain1 of Glassfish Application Server.
 
-GLASSFISH_HOME=<%= File.join(node[:glassfish][:home], "glassfish") %>
-export GLASSFISH_HOME
-
-GLASSFISH_OWNER=<%= node[:glassfish][:user] %> ;
-export GLASSFISH_OWNER
+export GLASSFISH_HOME=<%= File.join(node[:glassfish][:home], "glassfish") %>
+export GLASSFISH_OWNER=<%= node[:glassfish][:user] %> ;
+export GLASSFISH_DOMAIN=<%= @domain[:name] %>
 
 start() {
   echo -n "Starting Glassfish: "
-  echo "Starting Glassfish at `date`" >> $GLASSFISH_HOME/domains/domain1/logs/startup.log
-  su $GLASSFISH_OWNER -c "$GLASSFISH_HOME/bin/asadmin start-domain domain1" >> $GLASSFISH_HOME/domains/domain1/logs/startup.log
+  echo "Starting Glassfish at `date`" >> $GLASSFISH_HOME/domains/$GLASSFISH_DOMAIN/logs/startup.log
+  su $GLASSFISH_OWNER -c "$GLASSFISH_HOME/bin/asadmin start-domain $GLASSFISH_DOMAIN" >> $GLASSFISH_HOME/domains/$GLASSFISH_DOMAIN/logs/startup.log
   sleep 2
   echo "done"
 }
 
 stop() {
   echo -n "Stopping Glassfish: "
-  echo "Stopping Glassfish at `date`" >> $GLASSFISH_HOME/domains/domain1/logs/startup.log
-  su $GLASSFISH_OWNER -c "$GLASSFISH_HOME/bin/asadmin stop-domain domain1" >> $GLASSFISH_HOME/domains/domain1/logs/startup.log
+  echo "Stopping Glassfish at `date`" >> $GLASSFISH_HOME/domains/$GLASSFISH_DOMAIN/logs/startup.log
+  su $GLASSFISH_OWNER -c "$GLASSFISH_HOME/bin/asadmin stop-domain $GLASSFISH_DOMAIN" >> $GLASSFISH_HOME/domains/$GLASSFISH_DOMAIN/logs/startup.log
   echo "done"
 }
 

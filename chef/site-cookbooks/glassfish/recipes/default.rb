@@ -38,11 +38,6 @@ execute "install-glassfish" do
   action :run
 end
 
-template "/etc/init.d/glassfish" do
-  source "glassfish-init.d-script.erb"
-  mode "0755"
-end
-
 node[:glassfish][:domains].each do |domain|
   # Using port 7048 for Admin.
   # Using port 7080 for HTTP Instance.
@@ -64,7 +59,7 @@ node[:glassfish][:domains].each do |domain|
   name = domain[:name]
 
   execute "create-domain" do
-    command "#{asadmin} create-domain --user=asadmin --nopassword --portbase=#{domain[:base_port]} #{name}"
+    command "#{asadmin} create-domain --user=asadmin --nopassword=true --portbase=#{domain[:base_port]} #{name}"
     creates directory 
     user node[:glassfish][:user]
     action :run
@@ -82,6 +77,12 @@ node[:glassfish][:domains].each do |domain|
     creates secured_marker 
     user node[:glassfish][:user]
     action :run
+  end
+
+  template "/etc/init.d/glassfish" do
+    source "glassfish-init.d-script.erb"
+    variables(:domain => domain)
+    mode "0755"
   end
 
   domain[:applications].each do |application|

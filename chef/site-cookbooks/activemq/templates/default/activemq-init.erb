@@ -1,0 +1,60 @@
+#!/bin/bash
+#
+# activemq       Manages ActiveMQ.
+#
+# description: ActiveMQ is a JMS Messaging Queue Server.
+
+# Source function library.
+. /lib/lsb/init-functions
+test -f /etc/default/rcS && . /etc/default/rcS
+
+# /etc/activemq.conf is a file that gets source'd by the current activemq startup script
+# Purpose is to set $ACTIVEMQ_HOME & $JAVA_HOME 
+test -f /etc/activemq.conf && . /etc/activemq.conf
+
+if [ `id -u` -ne 0 ]; then 
+        echo "You need root privileges to run this script" 
+        exit 1
+fi
+
+umask 077
+
+start() {
+       log_daemon_msg "Starting ActiveMQ" "activemq"
+       if start-stop-daemon -b --chuid activemq --make-pidfile --start --pidfile /var/run/activemq.pid --startas $ACTIVEMQ_HOME/bin/activemq-admin start ; then
+           log_end_msg 0
+       else
+           echo "Failed"
+           log_end_msg 1
+       fi
+}
+stop() {
+       log_daemon_msg "Stopping ActiveMQ" "activemq"
+       if start-stop-daemon --stop --pidfile /var/run/activemq.pid ; then
+           log_end_msg 0
+       else
+           log_end_msg 1
+       fi
+       # $ACTIVEMQ_HOME/bin/activemq-admin stop
+}
+restart() {
+       stop
+       start
+}
+case "$1" in
+ start)
+       start
+       ;;
+ stop)
+       stop
+       ;;
+ restart|reload)
+       restart
+       ;;
+ *)
+       echo $"Usage: $0 {start|stop|restart}"
+       exit 1
+esac
+
+exit 0
+
