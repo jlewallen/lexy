@@ -2,5 +2,6 @@
 my.db
 ubuntu-10.10
 data
-config/*.json
+chef/config/*.json
+chef/config/dna-wgu.rb
 log

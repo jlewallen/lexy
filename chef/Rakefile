@@ -6,7 +6,11 @@ require 'rubygems'
 require 'json'
 
 task :default do
-  sh "cd config && ruby dna.rb"
+  dir = File.dirname(__FILE__)
+  Pathname.new(dir).join("config").children.each do |e|
+    next unless e.basename.to_s =~ /dna.*\.rb/
+    sh "cd config && ruby #{e}"
+  end
 end
 
 namespace :cook do
