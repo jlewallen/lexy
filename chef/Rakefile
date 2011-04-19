@@ -3,7 +3,18 @@
 
 require 'pathname'
 require 'rubygems'
+require 'open-uri'
 require 'json'
+
+class EC2
+  def self.security_groups
+    open("http://169.254.169.254/latest/meta-data/security-groups/").read.split("\n")
+  end
+
+  def self.ip
+    open('http://169.254.169.254/latest/meta-data/public-ipv4').read
+  end
+end
 
 task :default do
   dir = File.dirname(__FILE__)
@@ -24,8 +35,12 @@ namespace :cook do
     end
   end
 
-  task :lexy => :default do
-    sh "chef-solo -c #{dir}/config/solo.rb -j /etc/lexy.chef.json"
+  task "security-groups" => :default do
+    EC2.security_groups.each do |name|
+      file = "dna-" + name + ".json"
+      next unless Pathname.new(dir).join("config").join(file).file?
+      sh "chef-solo -c #{dir}/config/solo.rb -j #{file}"
+    end
   end
 
   task :custom => :default do
@@ -36,6 +51,10 @@ namespace :cook do
       f.write(dna.to_json)
     end
     sh "chef-solo -c #{dir}/config/solo.rb -j #{dir}/config/dna-custom.json"
+  end
+
+  task :lexy => :default do
+    sh "chef-solo -c #{dir}/config/solo.rb -j /etc/lexy.chef.json"
   end
 end
 

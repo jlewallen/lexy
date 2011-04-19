@@ -15,11 +15,14 @@ if ! [ -d /chef ]; then
   if ! [ -d $LEXY ]; then
     curl http://sp-provisioning.s3.amazonaws.com/chef.tar.gz > /tmp/chef.tar.gz
     tar xzf /tmp/chef.tar.gz -C /
+  else
     # git clone git://github.com/jlewallen/lexy.git $LEXY
+    ln -sf $LEXY/chef /chef
   fi
-  ln -sf $LEXY/chef /chef
 fi
 
 cp /chef/lexy-chef /usr/bin
+
+/usr/bin/lexy-chef cook:security-groups
 
 # EOF
