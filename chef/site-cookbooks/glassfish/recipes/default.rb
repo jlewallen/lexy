@@ -100,13 +100,31 @@ node[:glassfish][:domains].each do |domain|
 
     script "deploy-#{name}" do
       interpreter "/bin/bash"
-        code <<-EOS
+      code <<-EOS
         set -e -x
         #{asadmin} --port #{admin_port} deploy --force --contextroot #{application[:path]} #{local_war}
       EOS
       creates application_directory 
       user node[:glassfish][:user]
       action :run
+    end
+  end
+
+  domain[:resources].each do |resource|
+    if resource[:url]
+      name = resource[:name]
+      url = resource[:url]
+      script "configure-custom-resource" do
+        interpreter "/bin/bash"
+        code <<-EOS
+          #{asadmin} --port #{admin_port} create-custom-resource --restype java.net.URL --factoryclass org.glassfish.resources.custom.factory.URLObjectFactory #{name}
+          #{asadmin} --port #{admin_port} set server.resources.custom-resource.#{name}.property.spec=#{url}
+        EOS
+        not_if do
+          data = `#{asadmin} --port #{admin_port} get server.resources.custom-resource.#{name}.property.spec`
+          data =~ /=#{url}$/
+        end
+      end
     end
   end
 end
