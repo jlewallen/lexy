@@ -38,9 +38,10 @@ execute "install-glassfish" do
   action :run
 end
 
+private_key = ::File.join(node[:glassfish][:home], ".ssh", "id_rsa")
 execute "ssh-key-glassfish" do
-  command "ssh-keygen -t rsa"
-  creates ::File.join(node[:glassfish][:home], ".ssh", "id_rsa.pub")
+  command "ssh-keygen -N '' -t rsa -f #{private_key}"
+  creates private_key
   user node[:glassfish][:user]
   action :run
 end
@@ -86,12 +87,6 @@ node[:glassfish][:domains].each do |domain|
     action :run
   end
 
-  template "/etc/init.d/glassfish" do
-    source "glassfish-init.d-script.erb"
-    variables(:domain => domain)
-    mode "0755"
-  end
-
   (domain[:applications] || []).each do |application|
     war_name = File.basename(application[:war])
     name = File.basename(application[:war], File.extname(war_name))
@@ -134,11 +129,18 @@ node[:glassfish][:domains].each do |domain|
       end
     end
   end
-end
 
-service "glassfish" do
-  supports :start => true, :restart => true, :stop => true
-  action [ :enable, :start ]
+  service_name = "glassfish-#{name}"
+  template "/etc/init.d/#{service_name}" do
+    source "glassfish-init.d-script.erb"
+    variables(:domain => domain)
+    mode "0755"
+  end
+
+  service service_name do
+    supports :start => true, :restart => true, :stop => true
+    action [ :enable, :start ]
+  end
 end
 
 # EOF
