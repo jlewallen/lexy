@@ -92,7 +92,6 @@ class LXC
   end
 
   def clean
-    container.update_status("CLEAN")
     rootfs_path = path.join("rootfs")
     rootfs_path.rmtree if rootfs_path.directory?
     configure

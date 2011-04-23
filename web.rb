@@ -13,6 +13,14 @@ use Rack::Flash
 
 enable :sessions
 
+def errors_message(e)
+  if e.errors.any?
+    e.errors.map { |v| v }.flatten.join(" ")
+  else
+    nil
+  end
+end
+
 helpers do
   include Rack::Utils
   alias_method :h, :escape_html
@@ -53,8 +61,11 @@ end
 post '/containers/:name' do
   c = Container.get(params[:container][:id])
   c.attributes = params[:container]
-  c.save
-  flash[:notice] = "Container saved."
+  if c.save then
+    flash[:notice] = "Container saved."
+  else
+    flash[:error] = errors_message(c)
+  end
   redirect '/containers/' + params[:name]
 end
 
@@ -164,7 +175,11 @@ post '/containers' do
   c = Container.new(params[:container])
   c.path = "/var/lib/lxc/" + c.name
   c.save
-  flash[:notice] = "Container saved."
+  if c.save then
+    flash[:notice] = "Container saved."
+  else
+    flash[:error] = errors_message(c)
+  end
   redirect '/containers'
 end
 

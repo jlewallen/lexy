@@ -10,7 +10,7 @@ set -e -x
 
 NAME=<%= startup.name %>
 LEXY=/lexy
-STARTUP_HOME=$LEXY/$NAME
+STARTUP_HOME=$LEXY/templates/$NAME
 STARTUP=$STARTUP_HOME/startup.sh
 SKIP=/etc/rc.lexy.startup.skip
 TZ=America/Los_Angeles

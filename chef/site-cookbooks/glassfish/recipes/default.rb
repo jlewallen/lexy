@@ -85,7 +85,7 @@ node[:glassfish][:domains].each do |domain|
     mode "0755"
   end
 
-  domain[:applications].each do |application|
+  (domain[:applications] || []).each do |application|
     war_name = File.basename(application[:war])
     name = File.basename(application[:war], File.extname(war_name))
     local_war = File.join("/opt", war_name)
@@ -110,7 +110,7 @@ node[:glassfish][:domains].each do |domain|
     end
   end
 
-  domain[:resources].each do |resource|
+  (domain[:resources] || []).each do |resource|
     if resource[:url]
       name = resource[:name]
       url = resource[:url]
