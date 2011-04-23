@@ -38,6 +38,13 @@ execute "install-glassfish" do
   action :run
 end
 
+execute "ssh-key-glassfish" do
+  command "ssh-keygen -t rsa"
+  creates ::File.join(node[:glassfish][:home], ".ssh", "id_rsa.pub")
+  user node[:glassfish][:user]
+  action :run
+end
+
 node[:glassfish][:domains].each do |domain|
   # Using port 7048 for Admin.
   # Using port 7080 for HTTP Instance.

@@ -23,6 +23,10 @@ fi
 
 cp /chef/lexy-chef /usr/bin
 
-/usr/bin/lexy-chef cook:security-groups
+if [ -f /etc/lexy.chef.json ]; then
+  /usr/bin/lexy-chef cook:lexy
+else
+  /usr/bin/lexy-chef cook:security-groups
+fi
 
 # EOF

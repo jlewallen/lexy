@@ -5,6 +5,7 @@
 # chkconfig: 3 80 05
 # description:      Startup script for domain1 of Glassfish Application Server.
 
+export ENABLE_REPLICATION=true
 export GLASSFISH_HOME=<%= File.join(node[:glassfish][:home], "glassfish") %>
 export GLASSFISH_OWNER=<%= node[:glassfish][:user] %> ;
 export GLASSFISH_DOMAIN=<%= @domain[:name] %>
