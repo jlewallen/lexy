@@ -1,0 +1,1 @@
+default[:java_properties] = {}

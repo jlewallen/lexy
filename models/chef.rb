@@ -10,7 +10,11 @@ class Chef
   end
 
   def to_pretty_json
-    JSON.pretty_generate(JSON.parse(data || default_recipe))
+    begin
+      JSON.pretty_generate(JSON.parse(data || default_recipe))
+    rescue
+      data
+    end
   end
 
   def default_recipe
