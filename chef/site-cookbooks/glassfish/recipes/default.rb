@@ -87,6 +87,13 @@ node[:glassfish][:domains].each do |domain|
     action :run
   end
 
+  service_name = "glassfish-#{name}"
+  template "/etc/init.d/#{service_name}" do
+    source "glassfish-init.d-script.erb"
+    variables(:domain => domain)
+    mode "0755"
+  end
+
   (domain[:applications] || []).each do |application|
     war_name = File.basename(application[:war])
     name = File.basename(application[:war], File.extname(war_name))
@@ -114,27 +121,20 @@ node[:glassfish][:domains].each do |domain|
 
   (domain[:resources] || []).each do |resource|
     if resource[:url]
-      name = resource[:name]
+      resource_name = resource[:name]
       url = resource[:url]
       script "configure-custom-resource" do
         interpreter "/bin/bash"
         code <<-EOS
-          #{asadmin} --port #{admin_port} create-custom-resource --restype java.net.URL --factoryclass org.glassfish.resources.custom.factory.URLObjectFactory #{name}
-          #{asadmin} --port #{admin_port} set server.resources.custom-resource.#{name}.property.spec=#{url}
+          #{asadmin} --port #{admin_port} create-custom-resource --restype java.net.URL --factoryclass org.glassfish.resources.custom.factory.URLObjectFactory #{resource_name}
+          #{asadmin} --port #{admin_port} set server.resources.custom-resource.#{resource_name}.property.spec=#{url}
         EOS
         not_if do
-          data = `#{asadmin} --port #{admin_port} get server.resources.custom-resource.#{name}.property.spec`
+          data = `#{asadmin} --port #{admin_port} get server.resources.custom-resource.#{resource_name}.property.spec`
           data =~ /=#{url}$/
         end
       end
     end
-  end
-
-  service_name = "glassfish-#{name}"
-  template "/etc/init.d/#{service_name}" do
-    source "glassfish-init.d-script.erb"
-    variables(:domain => domain)
-    mode "0755"
   end
 
   service service_name do
