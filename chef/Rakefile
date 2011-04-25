@@ -37,8 +37,8 @@ namespace :cook do
 
   task "security-groups" => :default do
     EC2.security_groups.each do |name|
-      file = "dna-" + name + ".json"
-      next unless Pathname.new(dir).join("config").join(file).file?
+      file = Pathname.new(dir).join("config").join("dna-" + name + ".json")
+      next unless file.file?
       sh "chef-solo -c #{dir}/config/solo.rb -j #{file}"
     end
   end
