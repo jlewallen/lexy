@@ -54,7 +54,6 @@ end
 
 job 'container.destroy' do |args|
   args.symbolize_keys!
-  Container.first(:name => args[:name]).destroy
 end
 
 job 'container.restart' do |args|

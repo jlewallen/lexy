@@ -118,7 +118,9 @@ post '/containers/:name/stop' do
 end
 
 delete '/containers/:name' do
-  Stalker.enqueue('container.destroy', :name => params[:name])
+  @container = Container.first(:name => params[:name])
+  @container.destroy
+  Stalker.enqueue('container.destroy', :name => @container.name, :path => @container.path)
   flash[:notice] = "Deleted " + params[:name]
   redirect '/containers'
 end
