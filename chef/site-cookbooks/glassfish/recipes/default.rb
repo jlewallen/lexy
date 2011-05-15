@@ -21,6 +21,14 @@ remote_file "/opt/glassfish.zip" do
   checksum "00948001efebbe1aefb56fb01add5f1fff40f67d8214fd29a108979b99d54334"
 end
 
+directory File.join(File.dirname(node[:glassfish][:home]), "glassfish-nodes") do
+  owner node[:glassfish][:user]
+  group node[:glassfish][:group]
+  mode "0755"
+  action :create
+  recursive true
+end
+
 directory node[:glassfish][:home] do
   owner node[:glassfish][:user]
   group node[:glassfish][:group]
