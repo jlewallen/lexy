@@ -2,6 +2,8 @@
 
 set -e -x
 
+ulimit -n 8192
+
 LEXY=/lexy
 
 apt-get  update -q -y
