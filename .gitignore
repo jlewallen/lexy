@@ -4,4 +4,5 @@ ubuntu-10.10
 data
 chef/config/*.json
 chef/config/dna-wgu.rb
+chef/chef-stacktrace.out
 log

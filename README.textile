@@ -1,0 +1,10 @@
+h1. Overview
+
+TBD
+
+h1. Notes
+
+The Jenkins recipe in this repository is very dumb, if you're interested in a
+more thorough one, please look here:
+
+https://github.com/fnichol/chef-jenkins
