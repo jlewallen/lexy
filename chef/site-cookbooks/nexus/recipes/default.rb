@@ -18,7 +18,7 @@ remote_file "/opt/nexus.tar.gz" do
   owner node[:nexus][:user]
   source node[:nexus][:url]
   mode "0644"
-  checksum "83d2205e6e1afa9c91f24508846f83f27405d1c2cc79c8212ca2af9c3afa1c73"
+  checksum "869fd1adb2696c904c75e170ec3cbf59dd76314b84f0ee6dcc3bca00c3aba7d3"
 end
 
 directory node[:nexus][:home] do
