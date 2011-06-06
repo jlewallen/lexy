@@ -23,7 +23,7 @@ class Startup
 
   def script=(value)
     @script = value
-    write
+    write if id
     @script
   end
 
@@ -32,7 +32,7 @@ class Startup
   end
 
   def template_directory
-    Startup.templates_directory.join(name)
+    Startup.templates_directory.join(name || "")
   end
 
   def startup_script_file
