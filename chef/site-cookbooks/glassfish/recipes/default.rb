@@ -40,7 +40,7 @@ end
 asadmin = File.join(node[:glassfish][:home], "/glassfish/bin/asadmin")
 
 execute "install-glassfish" do
-  command "cd #{node[:glassfish][:home]} && unzip /opt/glassfish.zip && mv glassfish3/* glassfish3/.org* . && rmdir glassfish3 && rm -rf glassfish3/domains/domain1"
+  command "cd #{node[:glassfish][:home]} && unzip /opt/glassfish.zip && mv glassfish3/* glassfish3/.org* . && rmdir glassfish3 && rm -rf glassfish/domains/domain1"
   creates ::File.join(node[:glassfish][:home], "glassfish", "bin", "asadmin")
   user node[:glassfish][:user]
   action :run
@@ -124,6 +124,19 @@ node[:glassfish][:domains].each do |domain|
       creates application_directory 
       user node[:glassfish][:user]
       action :run
+    end
+  end
+
+  (domain[:jvm_options] || []).each do |option|
+    script "configure-jvm-options" do
+      interpreter "/bin/bash"
+      code <<-EOS
+        #{asadmin} --port #{admin_port} create-jvm-options "#{option}"
+      EOS
+      not_if do
+        data = `#{asadmin} --port #{admin_port} list-jvm-options`
+        data =~ /#{option}$/
+      end
     end
   end
 
