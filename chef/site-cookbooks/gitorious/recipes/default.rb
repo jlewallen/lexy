@@ -100,6 +100,7 @@ script "clone-gitorious" do
   chmod ug+x script/*
   chmod -R g+w config/ log/ public/ tmp/
 
+  rvm use ree --default
   ln -s /usr/local/rvm/rubies/ree-* /opt/ruby-enterprise
 
   # i've found taht this is way easier.
