@@ -100,9 +100,11 @@ script "clone-gitorious" do
   chmod ug+x script/*
   chmod -R g+w config/ log/ public/ tmp/
 
+  ln -s /usr/local/rvm/rubies/ree-* /opt/ruby-enterprise
+
   # i've found taht this is way easier.
-  sed -i 's@/opt/ruby-enterprise/bin/ruby@cd /var/www/git.myserver.com/gitorious/; rvm ree exec bundle exec@g' /var/www/git.myserver.com/gitorious/doc/templates/ubuntu/git-ultrasphinx 
-  sed -i 's@/opt/ruby-enterprise/bin/ruby@cd /var/www/git.myserver.com/gitorious/; rvm ree exec bundle exec@g' /var/www/git.myserver.com/gitorious/doc/templates/ubuntu/git-daemon
+  # sed -i 's@/opt/ruby-enterprise/bin/ruby@cd /var/www/git.myserver.com/gitorious/; rvm ree exec bundle exec@g' /var/www/git.myserver.com/gitorious/doc/templates/ubuntu/git-ultrasphinx 
+  # sed -i 's@/opt/ruby-enterprise/bin/ruby@cd /var/www/git.myserver.com/gitorious/; rvm ree exec bundle exec@g' /var/www/git.myserver.com/gitorious/doc/templates/ubuntu/git-daemon
 
   # paths and stuff...
   sed -i 's@/var/www/gitorious@/var/www/git.myserver.com/gitorious@g' /var/www/git.myserver.com/gitorious/doc/templates/ubuntu/git-ultrasphinx
