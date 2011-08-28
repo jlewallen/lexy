@@ -189,8 +189,8 @@ script "setup-gitorious" do
   creates "/var/www/git.myserver.com/gitorious/setup"
   code <<-EOS
   set -e -x
-  /bin/su - git -c "cd /var/www/git.myserver.com/gitorious && env RAILS_ENV=production rvm ree exec rake db:setup"
-  /bin/su - git -c "cd /var/www/git.myserver.com/gitorious && env RAILS_ENV=production rvm ree exec script/setup-gitorious.rb"
+  /bin/su - git -c "cd /var/www/git.myserver.com/gitorious && env RAILS_ENV=production rvm ree exec bundle exec rake db:setup"
+  /bin/su - git -c "cd /var/www/git.myserver.com/gitorious && env RAILS_ENV=production rvm ree exec bundle exec script/setup-gitorious.rb"
   touch /var/www/git.myserver.com/gitorious/setup
   EOS
 end
