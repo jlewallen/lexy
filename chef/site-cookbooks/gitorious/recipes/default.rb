@@ -100,7 +100,6 @@ script "clone-gitorious" do
   chmod ug+x script/*
   chmod -R g+w config/ log/ public/ tmp/
 
-  rvm use ree --default
   ln -s /usr/local/rvm/rubies/ree-* /opt/ruby-enterprise
 
   # i've found taht this is way easier.
@@ -136,9 +135,10 @@ script "install-gems" do
   interpreter "/bin/bash"
   cwd "/var/www/git.myserver.com/gitorious"
   code <<-EOS
-  rvm ree exec gem install bundler
-  rvm ree exec gem install unicorn
-  rvm ree exec bundle install
+  rvm use ree
+  gem install bundler
+  gem install unicorn
+  bundle install
   EOS
 end
 
