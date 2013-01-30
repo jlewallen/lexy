@@ -16,7 +16,9 @@ require "stalker"
 
 STDERR.sync = STDOUT.sync = true
 DataMapper::Logger.new('/var/log/lexy-jobs.log', :debug)
-DataMapper.setup(:default, "sqlite://#{Dir.pwd}/my.db?read_only=true")
+DataMapper.setup(:default, "sqlite://#{Dir.pwd}/my.db")
+
+DataMapper.logger << "Started..."
 
 require_relative "models/lexy"
 require_relative "monitor"
