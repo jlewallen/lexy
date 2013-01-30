@@ -22,7 +22,7 @@ class RootFS
   def configure
     unless @path.directory?
       @path.mkpath
-      template = "ubuntu-10.10.tar.gz"
+      template = "ubuntu-12.04.tar.gz"
       IO.popen("cd #{@path} && tar zxvf #{$lexy.join(template)}") do |io|
         io.each do |line|
           # p line
