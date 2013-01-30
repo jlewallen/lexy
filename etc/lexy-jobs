@@ -20,6 +20,7 @@ LOGFILE=/var/log/lexy-jobs.log
 . /lib/lsb/init-functions
 
 source /usr/local/rvm/scripts/rvm
+rvm use ruby-1.9.3
 
 # Include defaults if available
 if [ -f /etc/default/lexy ] ; then
@@ -61,7 +62,7 @@ start_server() {
   fi
 
   log_daemon_msg $START_COMMAND $START_ARGS
-  start-stop-daemon --start --chdir $LEXY_HOME --pidfile $PIDFILE --oknodo --make-pidfile --oknodo --background --startas $START_COMMAND -- $START_ARGS
+  start-stop-daemon --start --chdir $LEXY_HOME --pidfile $PIDFILE --oknodo --make-pidfile --background --startas $START_COMMAND -- $START_ARGS
   errcode=$?
   return $errcode
 }
