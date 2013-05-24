@@ -1,6 +1,10 @@
 h1. Overview
 
-TBD
+Please see http://docker.io first.
+
+I think much of this will get deprecated as docker gets more attention.
+
+It's only a matter of time before somebody whips together a web UI for it.
 
 h1. Notes
 
