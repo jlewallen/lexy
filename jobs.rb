@@ -94,7 +94,9 @@ job 'container.ssh' do |args|
 end
 
 job 'containers.refresh' do |args|
+  DataMapper.logger << "Refreshing..."
   Container.all.each do |c|
+    DataMapper.logger << "Refresh " + c.name
     c.refresh
   end
 end

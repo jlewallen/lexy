@@ -42,6 +42,7 @@ get '/css/application.css' do
 end
 
 get '/' do
+  Stalker.enqueue('containers.refresh')
   redirect '/containers'
 end
 
