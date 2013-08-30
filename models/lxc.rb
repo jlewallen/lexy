@@ -99,7 +99,7 @@ class LXC
   end
 
   def status
-    if exec("/usr/bin/lxc-info -n #{name}") =~ /is (\S+)$/ then
+    if exec("/usr/bin/lxc-info -n #{name}") =~ /^state:\s+(\S+)$/ then
       $1
     else
       'UNKNOWN'
